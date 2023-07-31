@@ -1,5 +1,4 @@
-import { PrismaClient, Prisma } from '@prisma/client';
-// import { area } from '../mock/area';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
