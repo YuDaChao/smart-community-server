@@ -80,9 +80,13 @@ export class AuthService {
     const accessToken = await this.signToken(
       user.id,
       this.jwtConf.accessTokenExpiresIn,
-      { name: user.userName },
+      { name: user.userName, communityId: user.communityId },
     );
-    return { accessToken };
+    const refreshAccessToken = await this.signToken(
+      user.id,
+      this.jwtConf.refreshTokenExpiresIn,
+    );
+    return { accessToken, refreshAccessToken };
   }
 
   /**
@@ -91,7 +95,7 @@ export class AuthService {
    * @param expiresIn 签名过期时间
    * @param payload 荷载
    */
-  async signToken<T>(userId: number, expiresIn: number, payload: T) {
+  async signToken<T>(userId: number, expiresIn: number, payload?: T) {
     return await this.jwtService.signAsync(
       {
         id: userId,

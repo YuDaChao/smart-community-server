@@ -11,8 +11,8 @@ model Area {
   id          Int         @unique @default(autoincrement())
   areaName    String      @map("area_name") @db.VarChar(20)
   areaCode    String      @unique @map("area_code") @db.VarChar(10)
-  createdAt   DateTime    @map("created_at") @db.Date()
-  updatedAt   DateTime    @updatedAt @map("updated_at") @db.DateTime()
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
   parentId    Int?        @map("parent_id")
   parent      Area?       @relation("area_parentId_fkey", fields: [parentId], references: [id])
   children    Area[]      @relation("area_parentId_fkey")
@@ -29,12 +29,13 @@ model Community {
   communityName    String     @map("community_name") @db.VarChar(50)
   /// 小区详细地址
   communityAddress String     @map("community_address") @db.VarChar(100)
-  createdAt        DateTime   @map("created_at") @db.Date()
-  updatedAt        DateTime   @updatedAt @map("updated_at") @db.DateTime()
+  createdAt        DateTime   @default(now()) @map("created_at")
+  updatedAt        DateTime   @updatedAt @map("updated_at")
   areaId           Int        @map("area_id")
   area             Area       @relation(fields: [areaId], references: [id])
   buildings        Building[]
   users            User[]
+  residents        Resident[]
 
   @@index([areaId], map: "community_areaId_fkey")
   @@map("community")
@@ -48,39 +49,41 @@ model Building {
   parentId     Int?       @map("parent_id")
   parent       Building?  @relation("building_parent_fk", fields: [parentId], references: [id])
   children     Building[] @relation("building_parent_fk")
-  createdAt    DateTime   @map("created_at") @db.Date()
-  updatedAt    DateTime   @updatedAt @map("updated_at") @db.DateTime()
+  createdAt    DateTime   @default(now()) @map("created_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
   /// 所属小区
   communityId  Int        @map("community_id")
   community    Community  @relation(fields: [communityId], references: [id])
-  owners       Owner[]
+  residents    Resident[]
 
   @@map("building")
 }
 
 /// 业主表
-model Owner {
-  id          Int      @unique @default(autoincrement())
+model Resident {
+  id            Int       @unique @default(autoincrement())
   /// 业主姓名
-  ownerName   String   @map("owner_name") @db.VarChar(50)
+  residentName  String    @map("resident_name") @db.VarChar(50)
   /// 业主手机号
-  ownerPhone  String   @map("owner_phone") @db.Char(11)
+  residentPhone String    @map("resident_phone") @db.Char(11)
   /// 楼层
-  floorNumber String   @map("floor_number") @db.VarChar(10)
+  floorNumber   String    @map("floor_number") @db.VarChar(10)
   /// 房间编号
-  floorNo     String   @map("floor_no") @db.VarChar(10)
-  createdAt   DateTime @map("created_at") @db.Date()
-  updatedAt   DateTime @updatedAt @map("updated_at") @db.DateTime()
+  floorNo       String    @map("floor_no") @db.VarChar(10)
+  createdAt     DateTime  @default(now()) @map("created_at")
+  updatedAt     DateTime  @updatedAt @map("updated_at")
+  communityId   Int       @map("community_id")
+  community     Community @relation(fields: [communityId], references: [id])
   /// 所属单元
-  buildingId  Int      @map("building_id")
-  building    Building @relation(fields: [buildingId], references: [id])
+  buildingId    Int       @map("building_id")
+  building      Building  @relation(fields: [buildingId], references: [id])
 
-  @@map("owner")
+  @@map("resident")
 }
 
 enum Role {
   ADMIN // 管理员
-  OWNER // 业主
+  RESIDENT // 业主
   MANAGER // 物业
 }
 
@@ -88,10 +91,10 @@ model User {
   id          Int       @unique @default(autoincrement())
   userName    String    @unique @map("user_name") @db.VarChar(50)
   password    String    @db.VarChar(100)
-  role        Role      @default(OWNER)
+  role        Role      @default(RESIDENT)
   avatar      String?   @db.VarChar(100)
-  createdAt   DateTime  @map("created_at") @db.Date()
-  updatedAt   DateTime  @updatedAt @map("updated_at") @db.DateTime()
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @updatedAt @map("updated_at")
   communityId Int       @map("community_id")
   community   Community @relation(fields: [communityId], references: [id])
 
