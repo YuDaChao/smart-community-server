@@ -1,8 +1,11 @@
 import {
+  BadRequestException,
   ConflictException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -12,6 +15,7 @@ import { HashingService } from '../hashing/hashing.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SignInDto } from './dtos/signin.dto';
 import { SignupDto } from './dtos/signup.dto';
+import { RequestUser } from '../constant/jwt.constant';
 
 @Injectable()
 export class AuthService {
@@ -32,25 +36,32 @@ export class AuthService {
       where: { userName },
     });
     if (user) {
-      throw new ConflictException('用户已存在');
+      throw new ConflictException('用户已存在！');
     }
     // 密码加密
     const hashedPassword = await this.hashingService.hash(password);
-    // 创建用户
-    const createUser = await this.prismaService.user.create({
-      data: {
-        userName,
-        password: hashedPassword,
-        role: role,
-        createdAt: new Date(),
-        avatar: avatar ?? `https://robohash.org/${userName}?set=4`,
-        communityId,
-      },
-    });
-    return {
-      ...createUser,
-      password: undefined,
-    };
+    try {
+      // 创建用户
+      const createUser = await this.prismaService.user.create({
+        data: {
+          userName,
+          password: hashedPassword,
+          role: role,
+          createdAt: new Date(),
+          avatar: avatar ?? `https://robohash.org/${userName}?set=4`,
+          communityId,
+        },
+      });
+      return {
+        ...createUser,
+        password: undefined,
+      };
+    } catch (e) {
+      if (e.code === 'P2003') {
+        throw new BadRequestException('参数错误！');
+      }
+      throw new InternalServerErrorException('服务异常！');
+    }
   }
 
   /**
@@ -76,16 +87,28 @@ export class AuthService {
     return await this.generateTokens(user);
   }
 
+  async refreshToken(refreshToken: string) {
+    try {
+      const requestUser = (await this.jwtService.verifyAsync(refreshToken, {
+        secret: this.jwtConf.secret,
+      })) as Omit<RequestUser, 'communityId'>;
+      const user = await this.prismaService.user.findUnique({
+        where: { id: requestUser.id },
+      });
+      return this.generateTokens(user);
+    } catch (e) {
+      throw new UnauthorizedException(e.message);
+    }
+  }
+
   async generateTokens(user: User) {
-    const accessToken = await this.signToken(
-      user.id,
-      this.jwtConf.accessTokenExpiresIn,
-      { name: user.userName, communityId: user.communityId },
-    );
-    const refreshAccessToken = await this.signToken(
-      user.id,
-      this.jwtConf.refreshTokenExpiresIn,
-    );
+    const [accessToken, refreshAccessToken] = await Promise.all([
+      this.signToken(user.id, this.jwtConf.accessTokenExpiresIn, {
+        name: user.userName,
+        communityId: user.communityId,
+      }),
+      this.signToken(user.id, this.jwtConf.refreshTokenExpiresIn),
+    ]);
     return { accessToken, refreshAccessToken };
   }
 

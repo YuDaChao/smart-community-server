@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { Role } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { Auth } from './decotators/auth.decorator';
@@ -19,5 +19,10 @@ export class AuthController {
   @Post('signin')
   async signIn(@Body() signInDto: SignInDto) {
     return this.authService.signIn(signInDto);
+  }
+
+  @Get('refresh')
+  async refreshToken(@Query('refreshToken') refreshToken: string) {
+    return this.authService.refreshToken(refreshToken);
   }
 }

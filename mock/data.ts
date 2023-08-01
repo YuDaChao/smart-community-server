@@ -1,27 +1,27 @@
 export const area = [
-  { id: 1, area_name: '北京市', area_code: 11, parent_id: null },
-  { id: 2, area_name: '北京市', area_code: 1101, parent_id: 2 },
-  { id: 3, area_name: '东城区', area_code: 110101, parent_id: 2 },
-  { id: 4, area_name: '西城区', area_code: 110102, parent_id: 2 },
-  { id: 5, area_name: '朝阳区', area_code: 110105, parent_id: 2 },
-  { id: 6, area_name: '丰台区', area_code: 110106, parent_id: 2 },
-  { id: 7, area_name: '石景山区', area_code: 110107, parent_id: 2 },
-  { id: 8, area_name: '海淀区', area_code: 110108, parent_id: 2 },
-  { id: 9, area_name: '门头沟区', area_code: 110109, parent_id: 2 },
-  { id: 10, area_name: '房山区', area_code: 110111, parent_id: 2 },
-  { id: 11, area_name: '通州区', area_code: 110112, parent_id: 2 },
-  { id: 12, area_name: '顺义区', area_code: 110113, parent_id: 2 },
-  { id: 13, area_name: '昌平区', area_code: 110114, parent_id: 2 },
-  { id: 14, area_name: '大兴区', area_code: 110115, parent_id: 2 },
-  { id: 15, area_name: '怀柔区', area_code: 110116, parent_id: 2 },
+  { id: 1, areaName: '北京市', areaCode: '11', parentId: null },
+  { id: 2, areaName: '北京市', areaCode: '1101', parentId: 1 },
+  { id: 3, areaName: '东城区', areaCode: '110101', parentId: 2 },
+  { id: 4, areaName: '西城区', areaCode: '110102', parentId: 2 },
+  { id: 5, areaName: '朝阳区', areaCode: '110105', parentId: 2 },
+  { id: 6, areaName: '丰台区', areaCode: '110106', parentId: 2 },
+  { id: 7, areaName: '石景山区', areaCode: '110107', parentId: 2 },
+  { id: 8, areaName: '海淀区', areaCode: '110108', parentId: 2 },
+  { id: 9, areaName: '门头沟区', areaCode: '110109', parentId: 2 },
+  { id: 10, areaName: '房山区', areaCode: '110111', parentId: 2 },
+  { id: 11, areaName: '通州区', areaCode: '110112', parentId: 2 },
+  { id: 12, areaName: '顺义区', areaCode: '110113', parentId: 2 },
+  { id: 13, areaName: '昌平区', areaCode: '110114', parentId: 2 },
+  { id: 14, areaName: '大兴区', areaCode: '110115', parentId: 2 },
+  { id: 15, areaName: '怀柔区', areaCode: '110116', parentId: 2 },
   {
     id: 16,
-    area_name: '平谷区',
-    area_code: 110117,
-    parent_id: 2,
+    areaName: '平谷区',
+    areaCode: '110117',
+    parentId: 2,
   },
-  { id: 17, area_name: '密云区', area_code: 110118, parent_id: 2 },
-  { id: 18, area_name: '延庆区', area_code: 110119, parent_id: 2 },
+  { id: 17, areaName: '密云区', areaCode: '110118', parentId: 2 },
+  { id: 18, areaName: '延庆区', areaCode: '110119110119', parentId: 2 },
 ];
 
 export const community = [
@@ -89,6 +89,30 @@ export const building = [
   {
     id: 9,
     buildingName: '三单元',
+    communityId: 3,
+  },
+];
+
+export const user = [
+  {
+    id: 1,
+    userName: 'yudachao',
+    password: '123456',
+    avatar: 'https://robohash.org/yudachao?set=4',
+    communityId: 1,
+  },
+  {
+    id: 2,
+    userName: 'lisi',
+    password: '123456',
+    avatar: 'https://robohash.org/lisi?set=4',
+    communityId: 2,
+  },
+  {
+    id: 3,
+    userName: 'zhangsan',
+    password: '123456',
+    avatar: 'https://robohash.org/zhangsan?set=4',
     communityId: 3,
   },
 ];
