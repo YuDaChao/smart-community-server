@@ -12,6 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { AreaModule } from './area/area.module';
 import { CommunityModule } from './community/community.module';
+import { ResidentModule } from './resident/resident.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { CommunityModule } from './community/community.module';
     UserModule,
     AreaModule,
     CommunityModule,
+    ResidentModule,
   ],
   controllers: [AppController],
   providers: [AppService, BcryptService, JwtService],

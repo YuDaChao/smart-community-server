@@ -14,7 +14,6 @@ main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (err) => {
-    console.error(err);
+  .catch(async () => {
     await prisma.$disconnect();
   });
