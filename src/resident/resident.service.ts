@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { GetResidentDto } from './dtos/get-resident.dto';
@@ -28,12 +29,22 @@ export class ResidentService {
     const { pageSize, current, ...filters } = getResidentDto;
     const skip = (current - 1) * pageSize;
     const take = pageSize;
+    const where: Prisma.ResidentWhereInput = {};
     Object.keys(filters).forEach((key: keyof typeof filters) => {
       if (key === 'createAt') {
+        where.createdAt = {
+          gte: filters[key][0],
+          lte: filters[key][1],
+        };
+      }
+      if (key === 'residentName') {
+        where[key] = {
+          contains: filters[key],
+        };
       }
     });
     const count = await this.prismaService.resident.count({
-      where: {},
+      where,
     });
     if (count === 0) {
       return {
@@ -42,7 +53,7 @@ export class ResidentService {
       };
     }
     const residentList = await this.prismaService.resident.findMany({
-      where: {},
+      where,
       orderBy: [{ createdAt: 'desc' }],
       skip,
       take,
