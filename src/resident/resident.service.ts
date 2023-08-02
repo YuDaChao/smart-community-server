@@ -29,22 +29,41 @@ export class ResidentService {
     const { pageSize, current, ...filters } = getResidentDto;
     const skip = (current - 1) * pageSize;
     const take = pageSize;
-    const where: Prisma.ResidentWhereInput = {};
+    const andWhere: Prisma.ResidentWhereInput[] = [];
     Object.keys(filters).forEach((key: keyof typeof filters) => {
       if (key === 'createAt') {
-        where.createdAt = {
-          gte: filters[key][0],
-          lte: filters[key][1],
-        };
+        andWhere.push({
+          createdAt: {
+            gte: filters[key][0],
+            lte: filters[key][1],
+          },
+        });
       }
       if (key === 'residentName') {
-        where[key] = {
-          contains: filters[key],
-        };
+        andWhere.push({
+          [key]: {
+            startsWith: filters[key],
+          },
+        });
+      }
+      if (
+        key === 'residentPhone' ||
+        key === 'communityId' ||
+        key === 'buildingId' ||
+        key === 'floorNo' ||
+        key === 'floorNumber'
+      ) {
+        andWhere.push({
+          [key]: {
+            equals: filters[key],
+          },
+        });
       }
     });
     const count = await this.prismaService.resident.count({
-      where,
+      where: {
+        AND: andWhere,
+      },
     });
     if (count === 0) {
       return {
@@ -53,7 +72,24 @@ export class ResidentService {
       };
     }
     const residentList = await this.prismaService.resident.findMany({
-      where,
+      where: {
+        AND: andWhere,
+      },
+      include: {
+        community: {
+          select: {
+            id: true,
+            communityName: true,
+            communityAddress: true,
+          },
+        },
+        building: {
+          select: {
+            id: true,
+            buildingName: true,
+          },
+        },
+      },
       orderBy: [{ createdAt: 'desc' }],
       skip,
       take,
