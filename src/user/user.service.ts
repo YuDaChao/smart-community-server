@@ -10,6 +10,17 @@ export class UserService {
     private readonly areaService: AreaService,
   ) {}
 
+  async getUserRoleInfoById(userId: number) {
+    return this.prismaService.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        role: true,
+        communityId: true,
+      },
+    });
+  }
+
   async getUserInfoById(userId: number) {
     const userAndCommunity = await this.prismaService.user.findFirst({
       where: { id: userId },
