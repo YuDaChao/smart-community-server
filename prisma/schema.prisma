@@ -148,3 +148,17 @@ model User {
 
 	@@map("user")
 }
+
+model Menu {
+	id        Int      @unique @default(autoincrement())
+	menuName  String   @db.VarChar(10)
+	icon      String?  @db.VarChar(20)
+	path      String   @db.VarChar(100)
+	createdAt DateTime @map("created_at") @db.Date
+	updatedAt DateTime @updatedAt @map("updated_at")
+	parentId  Int
+	parent    Menu     @relation(fields: [parentId], references: [id])
+	children  Menu[]
+
+	@@map("menu")
+}

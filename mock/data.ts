@@ -1,4 +1,4 @@
-import { Area, Community, Building, User, Role } from '@prisma/client';
+import { Area, Community, Building, Resident, Role } from '@prisma/client';
 
 const createdAt = new Date();
 
@@ -251,35 +251,38 @@ export const building: Building[] = [
   },
 ];
 
-export const user: User[] = [
+export const resident: Resident[] = [
   {
     id: 1,
-    userName: 'yudachao',
-    password: '123456',
-    avatar: 'https://robohash.org/yudachao?set=4',
-    communityId: 1,
-    role: Role.MANAGER,
+    residentName: '赵三',
+    residentPhone: '188275633 23',
+    floorNumber: 11,
+    floorNo: '1101',
     createdAt,
     updatedAt: createdAt,
+    communityId: 1,
+    buildingId: 1,
   },
   {
     id: 2,
-    userName: 'lisi',
-    password: '123456',
-    avatar: 'https://robohash.org/lisi?set=4',
-    communityId: 2,
-    role: Role.MANAGER,
+    residentName: ' 李四',
+    residentPhone: '188275633 44',
+    floorNumber: 13,
+    floorNo: '1204',
     createdAt,
     updatedAt: createdAt,
+    communityId: 2,
+    buildingId: 2,
   },
   {
     id: 3,
-    userName: 'zhangsan',
-    password: '123456',
-    avatar: 'https://robohash.org/zhangsan?set=4',
-    communityId: 3,
-    role: Role.MANAGER,
+    residentName: '赵六',
+    residentPhone: '18827563388',
+    floorNumber: 16,
+    floorNo: '1606',
     createdAt,
     updatedAt: createdAt,
+    communityId: 2,
+    buildingId: 1,
   },
 ];
