@@ -15,6 +15,9 @@ import { CommunityModule } from './community/community.module';
 import { ResidentModule } from './resident/resident.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
+import * as process from 'process';
+
+const ENV = process.env.NODE_ENV || 'development';
 
 @Module({
   imports: [
@@ -23,6 +26,8 @@ import { MenuModule } from './menu/menu.module';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
+      ignoreEnvFile: true,
+      envFilePath: [`.env.${ENV}`],
       load: [JwtConfig],
     }),
     UserModule,
