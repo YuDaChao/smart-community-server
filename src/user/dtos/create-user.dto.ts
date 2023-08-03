@@ -1,6 +1,4 @@
-import { Role } from '@prisma/client';
 import {
-  IsEnum,
   IsNumber,
   IsOptional,
   IsPositive,

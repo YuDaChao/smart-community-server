@@ -1,12 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import {
-  area,
-  building,
-  community,
-  resident,
-  role,
-  menu,
-} from '../mock/data';
+import { area, building, community, resident, role, menu } from '../mock/data';
 
 const prisma = new PrismaClient();
 

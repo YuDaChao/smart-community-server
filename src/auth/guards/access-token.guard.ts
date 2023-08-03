@@ -20,7 +20,8 @@ export class AccessTokenGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest<Request>();
-    const [_, token] = request.headers['authorization'].split(' ') ?? [];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, token] = request.headers['authorization']?.split(' ') ?? [];
     if (!token) {
       throw new UnauthorizedException();
     }

@@ -15,7 +15,6 @@ import { ResidentService } from './resident.service';
 import { UserService } from '../user/user.service';
 import { User } from '../decorators/user.decorator';
 import { RequestUser } from '../constant/jwt.constant';
-import { Role } from '@prisma/client';
 
 @Controller('resident')
 export class ResidentController {

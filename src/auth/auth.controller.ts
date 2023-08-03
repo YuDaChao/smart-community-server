@@ -1,5 +1,4 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { Role } from '@prisma/client';
 import { AuthService } from './auth.service';
 import { Auth } from './decotators/auth.decorator';
 import { SignInDto } from './dtos/signin.dto';
