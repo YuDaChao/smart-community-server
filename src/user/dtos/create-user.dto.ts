@@ -17,8 +17,9 @@ export class CreateUserDto {
   @IsString()
   @IsOptional()
   avatar: string;
-  @IsEnum(Role)
-  role: Role;
+  @IsNumber()
+  @IsPositive()
+  roleId: number;
   @IsNumber()
   @IsPositive()
   @IsOptional()

@@ -19,4 +19,6 @@ export class SignupDto {
   avatar: string;
   @IsNumber()
   communityId: number;
+  @IsNumber()
+  roleId: number;
 }

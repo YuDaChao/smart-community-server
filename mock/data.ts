@@ -7,7 +7,6 @@ import {
   VerifyStatus,
   HouseStatus,
   Menu,
-  UserMenus,
 } from '@prisma/client';
 
 const createdAt = new Date();
@@ -408,29 +407,29 @@ export const menu: Menu[] = [
   },
 ];
 
-export const userMenus: UserMenus[] = [
-  {
-    userId: 1,
-    menuId: 1,
-    createdAt,
-    updatedAt: createdAt,
-  },
-  {
-    userId: 1,
-    menuId: 3,
-    createdAt,
-    updatedAt: createdAt,
-  },
-  {
-    userId: 3,
-    menuId: 4,
-    createdAt,
-    updatedAt: createdAt,
-  },
-  {
-    userId: 3,
-    menuId: 5,
-    createdAt,
-    updatedAt: createdAt,
-  },
-];
+// export const userMenus: UserMenus[] = [
+//   {
+//     userId: 1,
+//     menuId: 1,
+//     createdAt,
+//     updatedAt: createdAt,
+//   },
+//   {
+//     userId: 1,
+//     menuId: 3,
+//     createdAt,
+//     updatedAt: createdAt,
+//   },
+//   {
+//     userId: 3,
+//     menuId: 4,
+//     createdAt,
+//     updatedAt: createdAt,
+//   },
+//   {
+//     userId: 3,
+//     menuId: 5,
+//     createdAt,
+//     updatedAt: createdAt,
+//   },
+// ];

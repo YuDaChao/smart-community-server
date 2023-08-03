@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { Role, User } from '@prisma/client';
+import { User } from '@prisma/client';
 import jwtConfig from '../config/jwt.config';
 import { HashingService } from '../hashing/hashing.service';
 import { PrismaService } from '../prisma/prisma.service';
@@ -27,10 +27,7 @@ export class AuthService {
     private readonly jwtConf: ConfigType<typeof jwtConfig>,
   ) {}
 
-  async signUp(
-    { userName, password, avatar, communityId }: SignupDto,
-    role: Role,
-  ) {
+  async signUp({ userName, password, avatar, communityId, roleId }: SignupDto) {
     // 判断用户名是否已存在
     const user = await this.prismaService.user.findUnique({
       where: { userName },
@@ -46,10 +43,10 @@ export class AuthService {
         data: {
           userName,
           password: hashedPassword,
-          role: role,
           createdAt: new Date(),
           avatar: avatar ?? `https://robohash.org/${userName}?set=4`,
           communityId,
+          roleId,
         },
       });
       return {

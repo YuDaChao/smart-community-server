@@ -134,27 +134,27 @@ model Repair {
 
 // 角色表
 model Role {
-	id        Int      @unique @default(autoincrement())
-	roleName  String   @unique @map("role_name") @db.VarChar(20)
-	createdAt DateTime @map("created_at") @db.Date
-	updatedAt DateTime @updatedAt @map("updated_at")
+	id        Int         @unique @default(autoincrement())
+	roleName  String      @unique @map("role_name") @db.VarChar(20)
+	createdAt DateTime    @map("created_at") @db.Date
+	updatedAt DateTime    @updatedAt @map("updated_at")
 	users     User[]
+	roleMenus RoleMenus[]
 
 	@@map("role")
 }
 
 model User {
-	id          Int         @unique @default(autoincrement())
-	userName    String      @unique @map("user_name") @db.VarChar(50)
-	password    String      @db.VarChar(100)
-	roleId      Int
-	role        Role        @relation(fields: [roleId], references: [id])
-	avatar      String?     @db.VarChar(100)
-	createdAt   DateTime    @map("created_at") @db.Date
-	updatedAt   DateTime    @updatedAt @map("updated_at")
-	communityId Int         @map("community_id")
-	community   Community   @relation(fields: [communityId], references: [id])
-	menus       UserMenus[]
+	id          Int       @unique @default(autoincrement())
+	userName    String    @unique @map("user_name") @db.VarChar(50)
+	password    String    @db.VarChar(100)
+	avatar      String?   @db.VarChar(100)
+	createdAt   DateTime  @map("created_at") @db.Date
+	updatedAt   DateTime  @updatedAt @map("updated_at")
+	communityId Int       @map("community_id")
+	community   Community @relation(fields: [communityId], references: [id])
+	roleId      Int       @map("role_id")
+	role        Role      @relation(fields: [roleId], references: [id])
 
 	@@map("user")
 }
@@ -170,20 +170,20 @@ model Menu {
 	parentId  Int?        @map("parent_id")
 	parent    Menu?       @relation("menu_parent_fk", fields: [parentId], references: [id])
 	children  Menu[]      @relation("menu_parent_fk")
-	users     UserMenus[]
+	roleMenus RoleMenus[]
 
 	@@map("menu")
 }
 
 // 用户菜单关联表
-model UserMenus {
+model RoleMenus {
 	menuId    Int      @map("menu_id")
-	menu      Menu     @relation(fields: [menuId], references: [id])
-	userId    Int      @map("user_id")
-	user      User     @relation(fields: [userId], references: [id])
+	roleId    Int      @map("role_id")
 	createdAt DateTime @map("created_at") @db.Date
 	updatedAt DateTime @updatedAt @map("updated_at")
+	role      Role     @relation(fields: [roleId], references: [id])
+	menu      Menu     @relation(fields: [menuId], references: [id])
 
-	@@id([menuId, userId])
-	@@map("user_menu")
+	@@id([menuId, roleId])
+	@@map("role_menu")
 }

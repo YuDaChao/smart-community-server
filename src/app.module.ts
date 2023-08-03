@@ -13,6 +13,8 @@ import { UserModule } from './user/user.module';
 import { AreaModule } from './area/area.module';
 import { CommunityModule } from './community/community.module';
 import { ResidentModule } from './resident/resident.module';
+import { RoleModule } from './role/role.module';
+import { MenuModule } from './menu/menu.module';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { ResidentModule } from './resident/resident.module';
     AreaModule,
     CommunityModule,
     ResidentModule,
+    RoleModule,
+    MenuModule,
   ],
   controllers: [AppController],
   providers: [AppService, BcryptService, JwtService],

@@ -55,7 +55,7 @@ export class ResidentController {
       ...getResidentDto,
     };
     // 1. 小区管理员只能查看本小区的住户
-    if (userInfo.role === Role.MANAGER) {
+    if (userInfo.roleId === 1) {
       query.communityId = userInfo.communityId;
     }
     return this.residentService.getResidentList(query);

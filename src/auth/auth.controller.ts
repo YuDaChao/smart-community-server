@@ -13,7 +13,7 @@ export class AuthController {
 
   @Post('signup')
   async signUp(@Body() signDto: SignupDto) {
-    return this.authService.signUp(signDto, Role.ADMIN);
+    return this.authService.signUp(signDto);
   }
 
   @Post('signin')

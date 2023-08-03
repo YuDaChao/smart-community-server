@@ -6,19 +6,17 @@ import {
   resident,
   role,
   menu,
-  userMenus,
 } from '../mock/data';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // await prisma.area.createMany({ data: area });
-  // await prisma.community.createMany({ data: community });
-  // await prisma.building.createMany({ data: building });
-  // await prisma.role.createMany({ data: role });
-  // await prisma.resident.createMany({ data: resident });
+  await prisma.area.createMany({ data: area });
+  await prisma.community.createMany({ data: community });
+  await prisma.building.createMany({ data: building });
+  await prisma.role.createMany({ data: role });
+  await prisma.resident.createMany({ data: resident });
   await prisma.menu.createMany({ data: menu });
-  await prisma.userMenus.createMany({ data: userMenus });
 }
 
 main()
