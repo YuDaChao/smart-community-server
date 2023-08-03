@@ -1,4 +1,14 @@
-import { Area, Community, Building, Resident, Role } from '@prisma/client';
+import {
+  Area,
+  Community,
+  Building,
+  Resident,
+  Role,
+  VerifyStatus,
+  HouseStatus,
+  Menu,
+  UserMenus,
+} from '@prisma/client';
 
 const createdAt = new Date();
 
@@ -255,9 +265,11 @@ export const resident: Resident[] = [
   {
     id: 1,
     residentName: '赵三',
-    residentPhone: '188275633 23',
+    residentPhone: '18827563323',
     floorNumber: 11,
     floorNo: '1101',
+    certificationStatus: VerifyStatus.PROCESSING,
+    houseStatus: HouseStatus.SELF_OCCUPIED,
     createdAt,
     updatedAt: createdAt,
     communityId: 1,
@@ -266,9 +278,11 @@ export const resident: Resident[] = [
   {
     id: 2,
     residentName: ' 李四',
-    residentPhone: '188275633 44',
+    residentPhone: '18827563344',
     floorNumber: 13,
     floorNo: '1204',
+    certificationStatus: VerifyStatus.SUCCESS,
+    houseStatus: HouseStatus.HIRE,
     createdAt,
     updatedAt: createdAt,
     communityId: 2,
@@ -280,9 +294,143 @@ export const resident: Resident[] = [
     residentPhone: '18827563388',
     floorNumber: 16,
     floorNo: '1606',
+    certificationStatus: VerifyStatus.ERROR,
+    houseStatus: HouseStatus.IDLE,
     createdAt,
     updatedAt: createdAt,
     communityId: 2,
     buildingId: 1,
+  },
+];
+
+export const role: Role[] = [
+  {
+    id: 1,
+    roleName: '超级管理员',
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 2,
+    roleName: '物业主管',
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 3,
+    roleName: '物业员工',
+    createdAt,
+    updatedAt: createdAt,
+  },
+];
+
+export const menu: Menu[] = [
+  {
+    id: 1,
+    menuName: '工作台',
+    menuIcon: null,
+    menuPath: null,
+    parentId: null,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 2,
+    menuName: '住户服务',
+    menuIcon: 'user',
+    menuPath: '/resident',
+    parentId: null,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 3,
+    menuName: '信息审核',
+    menuIcon: null,
+    menuPath: '/resident/audit',
+    parentId: 2,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 4,
+    menuName: '报事报修',
+    menuIcon: null,
+    menuPath: '/resident/ repair',
+    parentId: 2,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 5,
+    menuName: '住户信息',
+    menuIcon: 'house',
+    menuPath: '/house',
+    parentId: null,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 6,
+    menuName: '房屋信息',
+    menuIcon: null,
+    menuPath: null,
+    parentId: 5,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 7,
+    menuName: '住户信息',
+    menuIcon: null,
+    menuPath: null,
+    parentId: 5,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 8,
+    menuName: '业主信息',
+    menuIcon: null,
+    menuPath: null,
+    parentId: 5,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 9,
+    menuName: ' 物业管理',
+    menuIcon: 'manager',
+    menuPath: 'manager',
+    parentId: null,
+    createdAt,
+    updatedAt: createdAt,
+  },
+];
+
+export const userMenus: UserMenus[] = [
+  {
+    userId: 1,
+    menuId: 1,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    userId: 1,
+    menuId: 3,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    userId: 3,
+    menuId: 4,
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    userId: 3,
+    menuId: 5,
+    createdAt,
+    updatedAt: createdAt,
   },
 ];

@@ -107,58 +107,83 @@ enum RepairTypeStatus {
 // 报修字典表
 model RepairType {
 	id             Int              @unique @default(autoincrement())
-	repairTypeName String           @unique @db.VarChar(8)
+	repairTypeName String           @unique @map("repair_type_name") @db.VarChar(8)
 	status         RepairTypeStatus @default(ENABLE)
 	sort           Int              @db.UnsignedSmallInt
 	createdAt      DateTime         @map("created_at") @db.Date
 	updatedAt      DateTime         @updatedAt @map("updated_at")
+	repairs        Repair[]
 
 	@@map("repair_type_dict")
 }
 
 /// 报修表
 model Repair {
-	id         Int      @unique @default(autoincrement())
+	id           Int        @unique @default(autoincrement())
 	/// 问题描述
-	repairDesc String   @db.VarChar(255)
-	createdAt  DateTime @map("created_at") @db.Date
-	updatedAt  DateTime @updatedAt @map("updated_at")
-	residentId Int
-	resident   Resident @relation(fields: [residentId], references: [id])
+	repairDesc   String     @map("repair_desc") @db.VarChar(255)
+	createdAt    DateTime   @map("created_at") @db.Date
+	updatedAt    DateTime   @updatedAt @map("updated_at")
+	repairTypeId Int        @map("repair_type_id")
+	repairType   RepairType @relation(fields: [repairTypeId], references: [id])
+	residentId   Int        @map("resident_id")
+	resident     Resident   @relation(fields: [residentId], references: [id])
 
 	@@map("repair")
 }
 
-enum Role {
-	ADMIN // 管理员
-	EMPLOYEE // 员工
-	MANAGER // 物业
+// 角色表
+model Role {
+	id        Int      @unique @default(autoincrement())
+	roleName  String   @unique @map("role_name") @db.VarChar(20)
+	createdAt DateTime @map("created_at") @db.Date
+	updatedAt DateTime @updatedAt @map("updated_at")
+	users     User[]
+
+	@@map("role")
 }
 
 model User {
-	id          Int       @unique @default(autoincrement())
-	userName    String    @unique @map("user_name") @db.VarChar(50)
-	password    String    @db.VarChar(100)
-	role        Role      @default(MANAGER)
-	avatar      String?   @db.VarChar(100)
-	createdAt   DateTime  @map("created_at") @db.Date
-	updatedAt   DateTime  @updatedAt @map("updated_at")
-	communityId Int       @map("community_id")
-	community   Community @relation(fields: [communityId], references: [id])
+	id          Int         @unique @default(autoincrement())
+	userName    String      @unique @map("user_name") @db.VarChar(50)
+	password    String      @db.VarChar(100)
+	roleId      Int
+	role        Role        @relation(fields: [roleId], references: [id])
+	avatar      String?     @db.VarChar(100)
+	createdAt   DateTime    @map("created_at") @db.Date
+	updatedAt   DateTime    @updatedAt @map("updated_at")
+	communityId Int         @map("community_id")
+	community   Community   @relation(fields: [communityId], references: [id])
+	menus       UserMenus[]
 
 	@@map("user")
 }
 
+/// 菜单表
 model Menu {
-	id        Int      @unique @default(autoincrement())
-	menuName  String   @db.VarChar(10)
-	icon      String?  @db.VarChar(20)
-	path      String   @db.VarChar(100)
-	createdAt DateTime @map("created_at") @db.Date
-	updatedAt DateTime @updatedAt @map("updated_at")
-	parentId  Int
-	parent    Menu     @relation(fields: [parentId], references: [id])
-	children  Menu[]
+	id        Int         @unique @default(autoincrement())
+	menuName  String      @map("menu_name") @db.VarChar(10)
+	menuIcon  String?     @map("menu_icon") @db.VarChar(20)
+	menuPath  String?     @map("menu_path") @db.VarChar(100)
+	createdAt DateTime    @map("created_at") @db.Date
+	updatedAt DateTime    @updatedAt @map("updated_at")
+	parentId  Int?        @map("parent_id")
+	parent    Menu?       @relation("menu_parent_fk", fields: [parentId], references: [id])
+	children  Menu[]      @relation("menu_parent_fk")
+	users     UserMenus[]
 
 	@@map("menu")
+}
+
+// 用户菜单关联表
+model UserMenus {
+	menuId    Int      @map("menu_id")
+	menu      Menu     @relation(fields: [menuId], references: [id])
+	userId    Int      @map("user_id")
+	user      User     @relation(fields: [userId], references: [id])
+	createdAt DateTime @map("created_at") @db.Date
+	updatedAt DateTime @updatedAt @map("updated_at")
+
+	@@id([menuId, userId])
+	@@map("user_menu")
 }
