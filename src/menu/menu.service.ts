@@ -22,4 +22,19 @@ export class MenuService {
       },
     });
   }
+
+  /**
+   * 获取所有的菜单列表
+   */
+  async getAllMenus() {
+    return await this.prismaService.menu.findMany({
+      where: {
+        parentId: null,
+      },
+      include: {
+        children: true,
+      },
+      orderBy: [{ createdAt: 'asc' }, { updatedAt: 'asc' }],
+    });
+  }
 }

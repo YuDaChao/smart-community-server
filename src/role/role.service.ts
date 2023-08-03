@@ -100,6 +100,15 @@ export class RoleService {
   }
 
   /**
+   * 获取所有的权限列表
+   */
+  async getAllRoles() {
+    return this.prismaService.role.findMany({
+      orderBy: [{ createdAt: 'asc' }, { updatedAt: 'asc' }],
+    });
+  }
+
+  /**
    * 修改角色菜单权限
    * @param roleId 角色 Id
    * @param menuIds 菜单id列表
