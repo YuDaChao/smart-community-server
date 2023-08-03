@@ -1,15 +1,12 @@
 import { Controller, Get } from '@nestjs/common';
-import { PrismaService } from './prisma/prisma.service';
+import { Auth } from './auth/decotators/auth.decorator';
+import { AuthType } from './auth/enums/auth-type.enum';
 
+@Auth(AuthType.None)
 @Controller()
 export class AppController {
-  constructor(
-    private readonly prismaService: PrismaService,
-  ) {}
-
   @Get()
   async getHello() {
-    const result = await this.prismaService.community.findMany();
-    return result;
+    return 'hello';
   }
 }

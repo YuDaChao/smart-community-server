@@ -116,11 +116,7 @@ export class RoleService {
   async updateUserMenu(roleId: number, menuIds: number[]) {
     // 全部清空
     if (menuIds.length === 0) {
-      const deleteRoleMenus = await this.deleteRoleMenu(roleId, []);
-      return {
-        deleteCount: deleteRoleMenus.count,
-        addCount: 0,
-      };
+      return this.deleteRoleMenu(roleId, []);
     }
     const roleMenus = await this.prismaService.roleMenus.findMany({
       where: {
@@ -143,17 +139,8 @@ export class RoleService {
       actions.push(this.addRoleMenus(roleId, addMenuIds));
     }
     if (actions.length === 0) {
-      return {
-        deleteCount: 0,
-        addCount: 0,
-      };
+      return null;
     }
-    const [deleteCount, addCount] = await this.prismaService.$transaction(
-      actions,
-    );
-    return {
-      deleteCount: deleteCount.count,
-      addCount: addCount.count,
-    };
+    return this.prismaService.$transaction(actions);
   }
 }

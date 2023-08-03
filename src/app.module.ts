@@ -1,9 +1,11 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import JwtConfig from './config/jwt.config';
+import { ResponseInterceptor } from './interceptors/response.interceptor';
 import { JwtMiddleware } from './middlewares/jwt.middleware';
 import { PrismaModule } from './prisma/prisma.module';
 import { HashingModule } from './hashing/hashing.module';
@@ -15,9 +17,6 @@ import { CommunityModule } from './community/community.module';
 import { ResidentModule } from './resident/resident.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
-import * as process from 'process';
-
-const ENV = process.env.NODE_ENV || 'development';
 
 @Module({
   imports: [
@@ -26,8 +25,6 @@ const ENV = process.env.NODE_ENV || 'development';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile: true,
-      envFilePath: [`.env.${ENV}`],
       load: [JwtConfig],
     }),
     UserModule,
@@ -38,7 +35,15 @@ const ENV = process.env.NODE_ENV || 'development';
     MenuModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BcryptService, JwtService],
+  providers: [
+    AppService,
+    BcryptService,
+    JwtService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {

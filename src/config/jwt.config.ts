@@ -1,9 +1,7 @@
 import { registerAs } from '@nestjs/config';
 import * as process from 'process';
 
-const IS_DEV = process.env.NODE_ENV;
-console.log(IS_DEV);
-console.log(process.env.JWT_ACCESS_TOKEN_EXPIRESIN);
+console.log('---> ', process.env.JWT_TOKEN_SECRET);
 
 export default registerAs('jwt', () => ({
   secret: process.env.JWT_TOKEN_SECRET,
