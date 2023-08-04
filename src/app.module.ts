@@ -1,7 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import * as dotenv from 'dotenv';
-import * as path from 'path';
 import { JwtService } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,13 +20,7 @@ import { CommunityModule } from './community/community.module';
 import { ResidentModule } from './resident/resident.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
-import * as process from 'process';
-
-dotenv.config();
-
-const IS_DEV = process.env.NODE_ENV;
-console.log(IS_DEV);
-console.log(process.env.JWT_ACCESS_TOKEN_EXPIRESIN);
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 @Module({
   imports: [
@@ -46,6 +43,6 @@ console.log(process.env.JWT_ACCESS_TOKEN_EXPIRESIN);
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(JwtMiddleware).forRoutes('*');
+    consumer.apply(JwtMiddleware, LoggerMiddleware).forRoutes('*');
   }
 }
