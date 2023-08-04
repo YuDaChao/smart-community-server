@@ -1,5 +1,7 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
 import { JwtService } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,7 +19,11 @@ import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
 import * as process from 'process';
 
-const ENV = process.env.NODE_ENV || 'development';
+dotenv.config();
+
+const IS_DEV = process.env.NODE_ENV;
+console.log(IS_DEV);
+console.log(process.env.JWT_ACCESS_TOKEN_EXPIRESIN);
 
 @Module({
   imports: [
@@ -26,8 +32,6 @@ const ENV = process.env.NODE_ENV || 'development';
     AuthModule,
     ConfigModule.forRoot({
       isGlobal: true,
-      ignoreEnvFile: true,
-      envFilePath: [`.env.${ENV}`],
       load: [JwtConfig],
     }),
     UserModule,
