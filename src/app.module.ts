@@ -21,6 +21,7 @@ import { ResidentModule } from './resident/resident.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
     ResidentModule,
     RoleModule,
     MenuModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [AppService, BcryptService, JwtService],

@@ -99,4 +99,61 @@ export class ResidentService {
       data: residentList,
     };
   }
+
+  /**
+   * 查询小区总人数
+   * @param communityId
+   */
+  async getResidentCountByCommunityId(communityId?: number) {
+    const where: Prisma.ResidentWhereInput = {};
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      where.communityId = communityId;
+    }
+    return this.prismaService.resident.count({ where });
+  }
+
+  /**
+   * 统计小区住户房屋类型人数
+   * @param communityId
+   */
+  async getResidentHouseStatusCountByCommunityId(communityId?: number) {
+    const where: Prisma.ResidentWhereInput = {};
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      where.communityId = communityId;
+    }
+    const result = await this.prismaService.resident.groupBy({
+      by: ['houseStatus'],
+      _count: {
+        _all: true,
+      },
+    });
+    return result.map((item) => ({
+      houseStatus: item.houseStatus,
+      count: item._count._all,
+    }));
+  }
+
+  /**
+   * 统计房屋认证数量
+   * @param communityId
+   */
+  async getResidentCertificationStatusCountByCommunityId(communityId?: number) {
+    const where: Prisma.ResidentWhereInput = {};
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      where.communityId = communityId;
+    }
+    const result = await this.prismaService.resident.groupBy({
+      by: ['certificationStatus'],
+      _count: {
+        _all: true,
+      },
+    });
+    return result.map((item) => ({
+      certificationStatus: item.certificationStatus,
+      count: item._count._all,
+    }));
+  }
 }

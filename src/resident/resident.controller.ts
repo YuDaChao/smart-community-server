@@ -59,4 +59,34 @@ export class ResidentController {
     }
     return this.residentService.getResidentList(query);
   }
+
+  @Get('/house-status/count')
+  async getResidentHouseStatusCount(@User() user: RequestUser) {
+    /**
+     * 角色判断
+     * 1. 小区管理员只能查看本小区的住户
+     * 2. 超级管理员可以查看所有小区的住户
+     */
+    const userInfo = await this.userService.getUserRoleInfoById(user.id);
+    const communityId =
+      userInfo.roleId === 1 ? undefined : userInfo.communityId;
+    return this.residentService.getResidentHouseStatusCountByCommunityId(
+      communityId,
+    );
+  }
+
+  @Get('/certification-status/count')
+  async getResidentCertificationStatusCount(@User() user: RequestUser) {
+    /**
+     * 角色判断
+     * 1. 小区管理员只能查看本小区的住户
+     * 2. 超级管理员可以查看所有小区的住户
+     */
+    const userInfo = await this.userService.getUserRoleInfoById(user.id);
+    const communityId =
+      userInfo.roleId === 1 ? undefined : userInfo.communityId;
+    return this.residentService.getResidentCertificationStatusCountByCommunityId(
+      communityId,
+    );
+  }
 }
