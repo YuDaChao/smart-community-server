@@ -6,6 +6,7 @@ import { utilities, WinstonModule } from 'nest-winston';
 import { createLogger } from 'winston';
 import * as winston from 'winston';
 import * as process from 'process';
+import { ResponseInterceptor } from './interceptors/response.interceptor';
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ async function bootstrap() {
   });
   // logger
   // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
