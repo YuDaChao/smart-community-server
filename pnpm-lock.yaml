@@ -14,6 +14,7 @@ specifiers:
   '@types/bcrypt': ^5.0.0
   '@types/express': ^4.17.17
   '@types/jest': ^29.5.2
+  '@types/multer': ^1.4.7
   '@types/node': ^20.3.1
   '@types/supertest': ^2.0.12
   '@typescript-eslint/eslint-plugin': ^5.59.11
@@ -66,6 +67,7 @@ devDependencies:
   '@types/bcrypt': registry.npmmirror.com/@types/bcrypt/5.0.0
   '@types/express': registry.npmmirror.com/@types/express/4.17.17
   '@types/jest': registry.npmmirror.com/@types/jest/29.5.3
+  '@types/multer': registry.npmmirror.com/@types/multer/1.4.7
   '@types/node': registry.npmmirror.com/@types/node/20.4.5
   '@types/supertest': registry.npmmirror.com/@types/supertest/2.0.12
   '@typescript-eslint/eslint-plugin': registry.npmmirror.com/@typescript-eslint/eslint-plugin/5.62.0_c42x62htuvinjyo6sqia6oy3e4
@@ -1635,6 +1637,14 @@ packages:
     resolution: {integrity: sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/mime/-/mime-3.0.1.tgz}
     name: '@types/mime'
     version: 3.0.1
+    dev: true
+
+  registry.npmmirror.com/@types/multer/1.4.7:
+    resolution: {integrity: sha512-/SNsDidUFCvqqcWDwxv2feww/yqhNeTRL5CVoL3jU4Goc4kKEL10T7Eye65ZqPNi4HRx8sAEX59pV1aEH7drNA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/multer/-/multer-1.4.7.tgz}
+    name: '@types/multer'
+    version: 1.4.7
+    dependencies:
+      '@types/express': registry.npmmirror.com/@types/express/4.17.17
     dev: true
 
   registry.npmmirror.com/@types/node/20.4.5:

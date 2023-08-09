@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Area, Menu } from '@prisma/client';
 import { AreaService } from '../area/area.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RoleService } from '../role/role.service';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -90,5 +91,22 @@ export class UserService {
       permissions: permissionList,
       area,
     };
+  }
+
+  /**
+   * 修改用户信息
+   * @param userId
+   * @param updateUserDto
+   */
+  async updateUserInfoById(userId: number, updateUserDto: UpdateUserDto) {
+    try {
+      await this.prismaService.user.update({
+        where: { id: userId },
+        data: updateUserDto,
+      });
+      return null;
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 }
