@@ -19,16 +19,15 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { APP_FILTER } from '@nestjs/core';
 import { HttpExceptionFilter } from './filters/http-exception.filter';
+import * as path from 'path';
+import * as process from 'process';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     PrismaModule,
     HashingModule,
     AuthModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [JwtConfig],
-    }),
     UserModule,
     AreaModule,
     CommunityModule,
@@ -36,6 +35,14 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
     RoleModule,
     MenuModule,
     DashboardModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [JwtConfig],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(process.cwd(), 'images'),
+      serveRoot: '/static',
+    }),
   ],
   controllers: [AppController],
   providers: [

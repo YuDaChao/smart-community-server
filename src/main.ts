@@ -30,6 +30,7 @@ async function bootstrap() {
   });
   const app = await NestFactory.create(AppModule, {
     logger,
+    cors: true,
   });
   // logger
   // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
