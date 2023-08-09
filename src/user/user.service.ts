@@ -13,7 +13,7 @@ export class UserService {
   ) {}
 
   async getUserRoleInfoById(userId: number) {
-    return this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -21,6 +21,17 @@ export class UserService {
         communityId: true,
       },
     });
+    let permissionCodes: string[] = [];
+    if (user.roleId) {
+      const permissions = await this.roleService.getPermissionsByRoleId(
+        user.roleId,
+      );
+      permissionCodes = permissions.map((p) => p.permissionCode);
+    }
+    return {
+      ...user,
+      permissionCodes,
+    };
   }
 
   /**

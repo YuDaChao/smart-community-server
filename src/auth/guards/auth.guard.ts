@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -16,7 +17,7 @@ export class AuthGuard implements CanActivate {
     AuthType,
     CanActivate | CanActivate[]
   > = {
-    [AuthType.Bearer]: this.accessTokenGuard,
+    [AuthType.Bearer]: [this.accessTokenGuard],
     [AuthType.None]: {
       canActivate: () => true,
     },
@@ -34,17 +35,18 @@ export class AuthGuard implements CanActivate {
     ) ?? [AuthGuard.defaultAuthType];
     // 获取所有的guard
     const guards = authTypes.map((type) => this.authTypeGuardMap[type]).flat();
-    let error = new UnauthorizedException();
+
+    const error = new UnauthorizedException();
     for (const guard of guards) {
       try {
         const canActivate = await guard.canActivate(context);
-        if (canActivate) {
-          return true;
+        if (!canActivate) {
+          throw error;
         }
       } catch (e) {
-        error = e;
+        throw error;
       }
     }
-    throw error;
+    return true;
   }
 }
