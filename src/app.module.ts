@@ -1,9 +1,4 @@
-import {
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-  RequestMethod,
-} from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AppController } from './app.controller';
@@ -22,6 +17,8 @@ import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
 
 @Module({
   imports: [
@@ -41,7 +38,15 @@ import { DashboardModule } from './dashboard/dashboard.module';
     DashboardModule,
   ],
   controllers: [AppController],
-  providers: [AppService, BcryptService, JwtService],
+  providers: [
+    AppService,
+    BcryptService,
+    JwtService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
