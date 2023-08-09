@@ -58,8 +58,29 @@ export class RoleService {
   }
 
   /**
-   * 删除权限菜单
-   * @param roleId 权限 id
+   * 根据角色获取权限列表
+   * @param roleId
+   */
+  async getPermissionsByRoleId(roleId: number) {
+    const result = await this.prismaService.rolePermissions.findMany({
+      where: { roleId },
+      select: {
+        permission: {
+          select: {
+            permissionName: true,
+            permissionCode: true,
+          },
+        },
+      },
+    });
+    return result.map((item) => ({
+      ...item.permission,
+    }));
+  }
+
+  /**
+   * 删除角色菜单
+   * @param roleId 角色 id
    * @param menuIds 菜单 ids
    */
   deleteRoleMenu(
@@ -78,8 +99,8 @@ export class RoleService {
   }
 
   /**
-   * 添加权限菜单
-   * @param roleId 权限 id
+   * 添加角色菜单
+   * @param roleId 角色 id
    * @param menuIds 菜单 ids
    */
   addRoleMenus(
@@ -100,7 +121,7 @@ export class RoleService {
   }
 
   /**
-   * 获取所有的权限列表
+   * 获取所有的角色列表
    */
   async getAllRoles() {
     return this.prismaService.role.findMany({
@@ -109,7 +130,7 @@ export class RoleService {
   }
 
   /**
-   * 修改角色菜单权限
+   * 修改角色菜单角色
    * @param roleId 角色 Id
    * @param menuIds 菜单id列表
    */

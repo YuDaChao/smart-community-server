@@ -7,6 +7,7 @@ import {
   VerifyStatus,
   HouseStatus,
   Menu,
+  Permission,
 } from '@prisma/client';
 
 const createdAt = new Date();
@@ -355,7 +356,7 @@ export const menu: Menu[] = [
     id: 4,
     menuName: '报事报修',
     menuIcon: null,
-    menuPath: '/resident/ repair',
+    menuPath: '/resident/repair',
     parentId: 2,
     createdAt,
     updatedAt: createdAt,
@@ -433,3 +434,27 @@ export const menu: Menu[] = [
 //     updatedAt: createdAt,
 //   },
 // ];
+
+export const permission: Permission[] = [
+  {
+    id: 1,
+    permissionName: '工作台',
+    permissionCode: 'DASHBOARD',
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 2,
+    permissionName: '住户信息审核',
+    permissionCode: 'RESIDENT_AUDIT',
+    createdAt,
+    updatedAt: createdAt,
+  },
+  {
+    id: 3,
+    permissionName: '住户信息列表',
+    permissionCode: 'RESIDENT_LIST',
+    createdAt,
+    updatedAt: createdAt,
+  },
+];

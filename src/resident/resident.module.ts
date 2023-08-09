@@ -7,5 +7,6 @@ import { UserModule } from '../user/user.module';
   imports: [UserModule],
   providers: [ResidentService],
   controllers: [ResidentController],
+  exports: [ResidentService],
 })
 export class ResidentModule {}
