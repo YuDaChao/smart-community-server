@@ -1,10 +1,14 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { utilities, WinstonModule } from 'nest-winston';
 import { createLogger } from 'winston';
 import * as winston from 'winston';
 import * as process from 'process';
+import { ResponseInterceptor } from './interceptors/response.interceptor';
+
+dotenv.config();
 
 async function bootstrap() {
   const logInstance = createLogger({
@@ -26,9 +30,11 @@ async function bootstrap() {
   });
   const app = await NestFactory.create(AppModule, {
     logger,
+    cors: true,
   });
   // logger
   // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+  app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

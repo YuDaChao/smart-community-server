@@ -1,8 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Area, Menu } from '@prisma/client';
 import { AreaService } from '../area/area.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { RoleService } from '../role/role.service';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @Injectable()
 export class UserService {
@@ -13,7 +14,7 @@ export class UserService {
   ) {}
 
   async getUserRoleInfoById(userId: number) {
-    return this.prismaService.user.findUnique({
+    const user = await this.prismaService.user.findUnique({
       where: { id: userId },
       select: {
         id: true,
@@ -21,6 +22,17 @@ export class UserService {
         communityId: true,
       },
     });
+    let permissionCodes: string[] = [];
+    if (user.roleId) {
+      const permissions = await this.roleService.getPermissionsByRoleId(
+        user.roleId,
+      );
+      permissionCodes = permissions.map((p) => p.permissionCode);
+    }
+    return {
+      ...user,
+      permissionCodes,
+    };
   }
 
   /**
@@ -53,7 +65,7 @@ export class UserService {
   }
 
   /**
-   * 根据用户 id 获取用户基本信息 （所属社区，角色，区域）以及 菜单信息
+   * 根据用户 id 获取用户基本信息 （所属社区，角色，权限，区域）以及 菜单信息
    * @param userId
    */
   async getUserInfoById(userId: number) {
@@ -61,18 +73,40 @@ export class UserService {
     const { community, role, ...user } = userAndCommunity;
     let area: Partial<Area>;
     let menuList: Partial<Menu>[] = [];
+    let permissionList = [];
     if (community.areaId) {
       area = await this.areaService.getRecursiveAreaInfoById(community.areaId);
     }
     if (user.roleId) {
       menuList = await this.roleService.getMenusByRoleId(user.roleId);
+      permissionList = await this.roleService.getPermissionsByRoleId(
+        user.roleId,
+      );
     }
     return {
       ...user,
       ...community,
       ...role,
       menus: menuList,
+      permissions: permissionList,
       area,
     };
+  }
+
+  /**
+   * 修改用户信息
+   * @param userId
+   * @param updateUserDto
+   */
+  async updateUserInfoById(userId: number, updateUserDto: UpdateUserDto) {
+    try {
+      await this.prismaService.user.update({
+        where: { id: userId },
+        data: updateUserDto,
+      });
+      return null;
+    } catch (e) {
+      throw new BadRequestException();
+    }
   }
 }

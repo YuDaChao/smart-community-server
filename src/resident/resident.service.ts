@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { Prisma, VerifyStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { GetResidentDto } from './dtos/get-resident.dto';
@@ -98,5 +98,64 @@ export class ResidentService {
       count,
       data: residentList,
     };
+  }
+
+  /**
+   * 查询小区总人数 已认证的
+   * @param communityId
+   */
+  async getResidentCountByCommunityId(communityId?: number) {
+    const andWhere: Prisma.ResidentWhereInput[] = [
+      { certificationStatus: VerifyStatus.SUCCESS },
+    ];
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      andWhere.push({ communityId });
+    }
+    return this.prismaService.resident.count({ where: { AND: andWhere } });
+  }
+
+  /**
+   * 统计小区住户房屋类型人数
+   * @param communityId
+   */
+  async getResidentHouseStatusCountByCommunityId(communityId?: number) {
+    const where: Prisma.ResidentWhereInput = {};
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      where.communityId = communityId;
+    }
+    const result = await this.prismaService.resident.groupBy({
+      by: ['houseStatus'],
+      _count: {
+        _all: true,
+      },
+    });
+    return result.map((item) => ({
+      houseStatus: item.houseStatus,
+      count: item._count._all,
+    }));
+  }
+
+  /**
+   * 统计房屋认证数量
+   * @param communityId
+   */
+  async getResidentCertificationStatusCountByCommunityId(communityId?: number) {
+    const where: Prisma.ResidentWhereInput = {};
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      where.communityId = communityId;
+    }
+    const result = await this.prismaService.resident.groupBy({
+      by: ['certificationStatus'],
+      _count: {
+        _all: true,
+      },
+    });
+    return result.map((item) => ({
+      certificationStatus: item.certificationStatus,
+      count: item._count._all,
+    }));
   }
 }

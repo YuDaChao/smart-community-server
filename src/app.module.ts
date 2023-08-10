@@ -16,25 +16,44 @@ import { ResidentModule } from './resident/resident.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { DashboardModule } from './dashboard/dashboard.module';
+import { APP_FILTER } from '@nestjs/core';
+import { HttpExceptionFilter } from './filters/http-exception.filter';
+import * as path from 'path';
+import * as process from 'process';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 @Module({
   imports: [
     PrismaModule,
     HashingModule,
     AuthModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      load: [JwtConfig],
-    }),
     UserModule,
     AreaModule,
     CommunityModule,
     ResidentModule,
     RoleModule,
     MenuModule,
+    DashboardModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [JwtConfig],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: path.join(process.cwd(), 'images'),
+      serveRoot: '/static',
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, BcryptService, JwtService],
+  providers: [
+    AppService,
+    BcryptService,
+    JwtService,
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {

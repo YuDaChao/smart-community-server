@@ -8,10 +8,13 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { AccessTokenGuard } from './guards/access-token.guard';
 import { AuthGuard } from './guards/auth.guard';
+import { PermissionGuard } from './guards/permission.guard';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
     HashingModule,
+    UserModule,
     JwtModule.registerAsync({
       useFactory: (jwtConf: ConfigType<typeof jwtConfig>) => {
         return {
@@ -29,6 +32,10 @@ import { AuthGuard } from './guards/auth.guard';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: PermissionGuard,
     },
   ],
   controllers: [AuthController],

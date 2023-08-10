@@ -134,14 +134,38 @@ model Repair {
 
 // 角色表
 model Role {
-  id        Int         @unique @default(autoincrement())
-  roleName  String      @unique @map("role_name") @db.VarChar(20)
-  createdAt DateTime    @map("created_at") @db.Date
-  updatedAt DateTime    @updatedAt @map("updated_at")
-  users     User[]
-  roleMenus RoleMenus[]
+  id              Int               @unique @default(autoincrement())
+  roleName        String            @unique @map("role_name") @db.VarChar(20)
+  createdAt       DateTime          @map("created_at") @db.Date
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  users           User[]
+  roleMenus       RoleMenus[]
+  rolePermissions RolePermissions[]
 
   @@map("role")
+}
+
+// 权限表
+model Permission {
+  id              Int               @unique @default(autoincrement())
+  permissionName  String            @unique @map("permission_name") @db.VarChar(10)
+  permissionCode  String            @unique @map("permission_code") @db.VarChar(50)
+  createdAt       DateTime          @map("created_at") @db.Date
+  updatedAt       DateTime          @updatedAt @map("updated_at")
+  rolePermissions RolePermissions[]
+
+  @@map("permission")
+}
+
+model RolePermissions {
+  roleId       Int @map("role_id")
+  permissionId Int @map("permission_id")
+
+  role       Role       @relation(fields: [roleId], references: [id])
+  permission Permission @relation(fields: [permissionId], references: [id])
+
+  @@id([permissionId, roleId])
+  @@map("role_permission")
 }
 
 model User {
