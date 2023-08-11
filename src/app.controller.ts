@@ -7,6 +7,6 @@ import { AuthType } from './auth/enums/auth-type.enum';
 export class AppController {
   @Get()
   async getHello() {
-    return 'hello';
+    return 'hello 123';
   }
 }
