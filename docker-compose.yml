@@ -1,0 +1,28 @@
+version: "3.3"
+
+services:
+  nest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-community-api
+    restart: always
+    ports:
+      - "50000:50000"
+    env_file:
+      - .env
+    depends_on:
+      - mysql
+  mysql:
+    image: mysql
+    container_name: smart-community-mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: smart_community
+      MYSQL_PASSWORD: 111111
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+    ports:
+      - "12000:3306"
