@@ -204,18 +204,25 @@ model User {
   @@map("user")
 }
 
+enum MenuStatus {
+  ENABLE
+  DISABLE
+}
+
 /// 菜单表
 model Menu {
-  id        Int         @unique @default(autoincrement())
-  menuName  String      @map("menu_name") @db.VarChar(10)
-  menuIcon  String?     @map("menu_icon") @db.VarChar(20)
-  menuPath  String?     @map("menu_path") @db.VarChar(100)
-  createdAt DateTime    @map("created_at")
-  updatedAt DateTime    @updatedAt @map("updated_at")
-  parentId  Int?        @map("parent_id")
-  parent    Menu?       @relation("menu_parent_fk", fields: [parentId], references: [id])
-  children  Menu[]      @relation("menu_parent_fk")
-  roleMenus RoleMenus[]
+  id           Int         @unique @default(autoincrement())
+  menuName     String      @map("menu_name") @db.VarChar(10)
+  menuIcon     String?     @map("menu_icon") @db.VarChar(20)
+  menuPath     String?     @map("menu_path") @db.VarChar(100)
+  menuStatus   MenuStatus  @default(ENABLE) @map("menu_status")
+  menuPriority Int         @map("menu_priority") @db.Int
+  createdAt    DateTime    @map("created_at")
+  updatedAt    DateTime    @updatedAt @map("updated_at")
+  parentId     Int?        @map("parent_id")
+  parent       Menu?       @relation("menu_parent_fk", fields: [parentId], references: [id])
+  children     Menu[]      @relation("menu_parent_fk")
+  roleMenus    RoleMenus[]
 
   @@map("menu")
 }

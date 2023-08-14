@@ -21,40 +21,21 @@ export class RoleService {
       },
       select: {
         menuId: true,
-        roleId: true,
-        menu: {
-          select: {
-            id: true,
-            menuName: true,
-            parentId: true,
-          },
-        },
       },
     });
     // 一级菜单 ids
-    const parentIds = menus
-      .filter((menu) => menu.menu.parentId === null)
-      .map((menu) => menu.menuId);
-    // 子菜单 ids[]
-    const childIds = menus
-      .filter((menu) => menu.menu.parentId !== null)
-      .map((menu) => menu.menuId);
+    const menuIds = menus.map((menu) => menu.menuId);
+    // // 子菜单 ids[]
+    // const childIds = menus
+    //   .filter((menu) => menu.menu.parentId !== null)
+    //   .map((menu) => menu.menuId);
+    //
+    // const [parentMenus, childMenus] = await Promise.all([
+    //   this.menuService.getMenusByIds(parentIds),
+    //   this.menuService.getMenusByIds(childIds),
+    // ]);
 
-    const [parentMenus, childMenus] = await Promise.all([
-      this.menuService.getMenusByIds(parentIds),
-      this.menuService.getMenusByIds(childIds),
-    ]);
-
-    return parentMenus.map((parent) => {
-      const menu = { ...parent, children: null };
-      const children = childMenus.filter(
-        (child) => child.parentId === parent.id,
-      );
-      if (children.length > 0) {
-        menu.children = children;
-      }
-      return menu;
-    });
+    return this.menuService.getMenusByIds(menuIds);
   }
 
   /**
@@ -79,7 +60,7 @@ export class RoleService {
   }
 
   /**
-   * 删除角色菜单
+   * 根据角色 ID删除菜单
    * @param roleId 角色 id
    * @param menuIds 菜单 ids
    */
@@ -99,7 +80,7 @@ export class RoleService {
   }
 
   /**
-   * 添加角色菜单
+   * 给角色添加菜单
    * @param roleId 角色 id
    * @param menuIds 菜单 ids
    */
@@ -130,7 +111,7 @@ export class RoleService {
   }
 
   /**
-   * 修改角色菜单
+   * 根据角色 id修改菜单（新增、删除）
    * @param roleId 角色 Id
    * @param menuIds 菜单id列表
    */

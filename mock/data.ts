@@ -10,6 +10,7 @@ import {
   Permission,
   House,
   ResidentType,
+  MenuStatus,
 } from '@prisma/client';
 
 const createdAt = new Date();
@@ -344,6 +345,8 @@ export const menu: Menu[] = [
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 1000,
   },
   {
     id: 2,
@@ -353,6 +356,8 @@ export const menu: Menu[] = [
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 999,
   },
   {
     id: 3,
@@ -362,6 +367,8 @@ export const menu: Menu[] = [
     parentId: 2,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 901,
   },
   {
     id: 4,
@@ -371,6 +378,8 @@ export const menu: Menu[] = [
     parentId: 2,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 900,
   },
   {
     id: 5,
@@ -380,6 +389,8 @@ export const menu: Menu[] = [
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 998,
   },
   {
     id: 6,
@@ -389,6 +400,8 @@ export const menu: Menu[] = [
     parentId: 5,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 904,
   },
   {
     id: 7,
@@ -398,6 +411,8 @@ export const menu: Menu[] = [
     parentId: 5,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 903,
   },
   {
     id: 8,
@@ -407,6 +422,8 @@ export const menu: Menu[] = [
     parentId: 5,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 997,
   },
   {
     id: 9,
@@ -416,6 +433,8 @@ export const menu: Menu[] = [
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 996,
   },
 ];
 
