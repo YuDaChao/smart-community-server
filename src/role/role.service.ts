@@ -130,7 +130,7 @@ export class RoleService {
   }
 
   /**
-   * 修改角色菜单角色
+   * 修改角色菜单
    * @param roleId 角色 Id
    * @param menuIds 菜单id列表
    */

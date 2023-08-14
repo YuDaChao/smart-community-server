@@ -29,7 +29,7 @@ model Community {
   communityName    String     @map("community_name") @db.VarChar(50)
   /// 小区详细地址
   communityAddress String     @map("community_address") @db.VarChar(100)
-  createdAt        DateTime   @map("created_at") @db.Date
+  createdAt        DateTime   @map("created_at")
   updatedAt        DateTime   @updatedAt @map("updated_at")
   areaId           Int        @map("area_id")
   area             Area       @relation(fields: [areaId], references: [id])
@@ -49,52 +49,74 @@ model Building {
   parentId     Int?       @map("parent_id")
   parent       Building?  @relation("building_parent_fk", fields: [parentId], references: [id])
   children     Building[] @relation("building_parent_fk")
-  createdAt    DateTime   @map("created_at") @db.Date
+  createdAt    DateTime   @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
   /// 所属小区
   communityId  Int        @map("community_id")
   community    Community  @relation(fields: [communityId], references: [id])
-  residents    Resident[]
+  // 房间
+  houses       House[]
+
+  residents Resident[]
 
   @@map("building")
 }
 
 // 审核/认证状态
 enum VerifyStatus {
-  PROCESSING // 认证中
-  SUCCESS // 已认证
-  ERROR // 未认证
+  DEFAULT /// 未认证
+  PROCESSING /// 认证中
+  SUCCESS /// 已认证
+  ERROR /// 认证失败
 }
 
 enum HouseStatus {
-  SELF_OCCUPIED // 自住
-  HIRE // 出租
-  IDLE // 空闲
+  SELF_OCCUPIED /// 自住
+  HIRE /// 出租
+  IDLE /// 空闲
 }
 
-/// 业主表
-model Resident {
-  id                  Int          @unique @default(autoincrement())
-  /// 业主姓名
-  residentName        String       @map("resident_name") @db.VarChar(50)
-  /// 业主手机号
-  residentPhone       String       @map("resident_phone") @db.Char(11)
+model House {
+  id          Int         @unique @default(autoincrement())
   /// 楼层
-  floorNumber         Int          @map("floor_number") @db.UnsignedSmallInt
+  floorNumber Int         @map("floor_number") @db.UnsignedSmallInt
   /// 房间编号
-  floorNo             String       @map("floor_no") @db.VarChar(10)
-  // 认证状态
-  certificationStatus VerifyStatus @default(PROCESSING) @map("certification_status")
-  // 房子状态
-  houseStatus         HouseStatus  @default(SELF_OCCUPIED) @map("house_status")
-  createdAt           DateTime     @map("created_at") @db.Date
-  updatedAt           DateTime     @updatedAt @map("updated_at")
-  communityId         Int          @map("community_id")
-  community           Community    @relation(fields: [communityId], references: [id])
+  floorNo     String      @map("floor_no") @db.VarChar(10)
+  houseStatus HouseStatus @default(SELF_OCCUPIED)
+  createdAt   DateTime    @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
   /// 所属单元
-  buildingId          Int          @map("building_id")
-  building            Building     @relation(fields: [buildingId], references: [id])
-  repairs             Repair[]
+  buildingId Int        @map("building_id")
+  building   Building   @relation(fields: [buildingId], references: [id])
+  residents  Resident[]
+
+  @@map("house")
+}
+
+enum ResidentType {
+  OWNER /// 业主
+  TENANT /// 租户
+}
+
+/// 住户
+model Resident {
+  id            Int          @unique @default(autoincrement())
+  /// 住户姓名
+  residentName  String       @map("resident_name") @db.VarChar(50)
+  /// 住户手机号
+  residentPhone String       @map("resident_phone") @db.Char(11)
+  residentType  ResidentType @default(OWNER) @map("resident_type")
+  verifyStatus  VerifyStatus @default(DEFAULT) @map("verify_status")
+  createdAt     DateTime     @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  communityId   Int          @map("community_id")
+  community     Community    @relation(fields: [communityId], references: [id])
+  buildingId    Int          @map("building_id")
+  building      Building     @relation(fields: [buildingId], references: [id])
+  houseId       Int          @map("house_id")
+  house         House        @relation(fields: [houseId], references: [id])
+  repairs       Repair[]
 
   @@map("resident")
 }
@@ -110,7 +132,7 @@ model RepairType {
   repairTypeName String           @unique @map("repair_type_name") @db.VarChar(8)
   status         RepairTypeStatus @default(ENABLE)
   sort           Int              @db.UnsignedSmallInt
-  createdAt      DateTime         @map("created_at") @db.Date
+  createdAt      DateTime         @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")
   repairs        Repair[]
 
@@ -122,7 +144,7 @@ model Repair {
   id           Int        @unique @default(autoincrement())
   /// 问题描述
   repairDesc   String     @map("repair_desc") @db.VarChar(255)
-  createdAt    DateTime   @map("created_at") @db.Date
+  createdAt    DateTime   @map("created_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
   repairTypeId Int        @map("repair_type_id")
   repairType   RepairType @relation(fields: [repairTypeId], references: [id])
@@ -136,7 +158,7 @@ model Repair {
 model Role {
   id              Int               @unique @default(autoincrement())
   roleName        String            @unique @map("role_name") @db.VarChar(20)
-  createdAt       DateTime          @map("created_at") @db.Date
+  createdAt       DateTime          @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   users           User[]
   roleMenus       RoleMenus[]
@@ -150,7 +172,7 @@ model Permission {
   id              Int               @unique @default(autoincrement())
   permissionName  String            @unique @map("permission_name") @db.VarChar(10)
   permissionCode  String            @unique @map("permission_code") @db.VarChar(50)
-  createdAt       DateTime          @map("created_at") @db.Date
+  createdAt       DateTime          @map("created_at")
   updatedAt       DateTime          @updatedAt @map("updated_at")
   rolePermissions RolePermissions[]
 
@@ -158,11 +180,10 @@ model Permission {
 }
 
 model RolePermissions {
-  roleId       Int @map("role_id")
-  permissionId Int @map("permission_id")
-
-  role       Role       @relation(fields: [roleId], references: [id])
-  permission Permission @relation(fields: [permissionId], references: [id])
+  roleId       Int        @map("role_id")
+  permissionId Int        @map("permission_id")
+  role         Role       @relation(fields: [roleId], references: [id])
+  permission   Permission @relation(fields: [permissionId], references: [id])
 
   @@id([permissionId, roleId])
   @@map("role_permission")
@@ -173,7 +194,7 @@ model User {
   userName    String    @unique @map("user_name") @db.VarChar(50)
   password    String    @db.VarChar(100)
   avatar      String?   @db.VarChar(100)
-  createdAt   DateTime  @map("created_at") @db.Date
+  createdAt   DateTime  @map("created_at")
   updatedAt   DateTime  @updatedAt @map("updated_at")
   communityId Int       @map("community_id")
   community   Community @relation(fields: [communityId], references: [id])
@@ -189,7 +210,7 @@ model Menu {
   menuName  String      @map("menu_name") @db.VarChar(10)
   menuIcon  String?     @map("menu_icon") @db.VarChar(20)
   menuPath  String?     @map("menu_path") @db.VarChar(100)
-  createdAt DateTime    @map("created_at") @db.Date
+  createdAt DateTime    @map("created_at")
   updatedAt DateTime    @updatedAt @map("updated_at")
   parentId  Int?        @map("parent_id")
   parent    Menu?       @relation("menu_parent_fk", fields: [parentId], references: [id])
@@ -203,7 +224,7 @@ model Menu {
 model RoleMenus {
   menuId    Int      @map("menu_id")
   roleId    Int      @map("role_id")
-  createdAt DateTime @map("created_at") @db.Date
+  createdAt DateTime @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
   role      Role     @relation(fields: [roleId], references: [id])
   menu      Menu     @relation(fields: [menuId], references: [id])

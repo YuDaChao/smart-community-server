@@ -49,9 +49,7 @@ export class ResidentService {
       if (
         key === 'residentPhone' ||
         key === 'communityId' ||
-        key === 'buildingId' ||
-        key === 'floorNo' ||
-        key === 'floorNumber'
+        key === 'buildingId'
       ) {
         andWhere.push({
           [key]: {
@@ -106,7 +104,7 @@ export class ResidentService {
    */
   async getResidentCountByCommunityId(communityId?: number) {
     const andWhere: Prisma.ResidentWhereInput[] = [
-      { certificationStatus: VerifyStatus.SUCCESS },
+      { verifyStatus: VerifyStatus.SUCCESS },
     ];
     // 超级管理员 查看所有小区数据
     if (communityId) {
@@ -125,7 +123,7 @@ export class ResidentService {
     if (communityId) {
       where.communityId = communityId;
     }
-    const result = await this.prismaService.resident.groupBy({
+    const result = await this.prismaService.house.groupBy({
       by: ['houseStatus'],
       _count: {
         _all: true,
@@ -148,13 +146,13 @@ export class ResidentService {
       where.communityId = communityId;
     }
     const result = await this.prismaService.resident.groupBy({
-      by: ['certificationStatus'],
+      by: ['verifyStatus'],
       _count: {
         _all: true,
       },
     });
     return result.map((item) => ({
-      certificationStatus: item.certificationStatus,
+      certificationStatus: item.verifyStatus,
       count: item._count._all,
     }));
   }

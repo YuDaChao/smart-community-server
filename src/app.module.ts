@@ -22,6 +22,7 @@ import { HttpExceptionFilter } from './filters/http-exception.filter';
 import * as path from 'path';
 import * as process from 'process';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { RedisModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       rootPath: path.join(process.cwd(), 'images'),
       serveRoot: '/static',
     }),
+    RedisModule,
   ],
   controllers: [AppController],
   providers: [
