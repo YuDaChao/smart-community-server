@@ -1,18 +1,6 @@
 version: "3.3"
 
 services:
-  nest-api:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: smart-community-api
-    restart: always
-    ports:
-      - "50000:50000"
-    env_file:
-      - .env
-    depends_on:
-      - mysql
   mysql:
     image: mysql
     container_name: smart-community-mysql
@@ -26,3 +14,13 @@ services:
       - ./volumes/mysql:/var/lib/mysql
     ports:
       - "12000:3306"
+  nest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-community-api
+    restart: always
+    ports:
+      - "50000:50000"
+    depends_on:
+      - mysql
