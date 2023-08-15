@@ -2,7 +2,6 @@ import { Injectable, NestMiddleware, Logger } from '@nestjs/common';
 import { NextFunction, Request, Response } from 'express';
 import { REQUEST_USER_KEY, RequestUser } from '../constant/jwt.constant';
 import { LoggerService } from '../../logger/logger.service';
-import { BULL_INSERT_LOGGER_PROCESS } from '../constant/bull.constant';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
