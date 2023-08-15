@@ -12,6 +12,7 @@ export class JwtMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
 
   use(req: Request, res: Response, next: NextFunction) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [_, token] = req.headers.authorization?.split(' ') ?? [];
     req[REQUEST_USER_KEY] = this.jwtService.decode(token) as RequestUser;
     next();
