@@ -14,7 +14,7 @@ import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ResidentService } from './resident.service';
 import { UserService } from '../user/user.service';
 import { User } from '../decorators/user.decorator';
-import { RequestUser } from '../constant/jwt.constant';
+import { RequestUser } from '../commons/constant/jwt.constant';
 
 @Controller('resident')
 export class ResidentController {

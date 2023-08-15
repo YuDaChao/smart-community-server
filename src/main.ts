@@ -6,7 +6,7 @@ import { utilities, WinstonModule } from 'nest-winston';
 import { createLogger } from 'winston';
 import * as winston from 'winston';
 import * as process from 'process';
-import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { ResponseInterceptor } from './commons/interceptors/response.interceptor';
 
 dotenv.config();
 
