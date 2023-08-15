@@ -10,7 +10,7 @@ export class ResidentService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async createResident(createResidentDto: CreateResidentDto) {
-    return this.prismaService.resident.create({
+    return await this.prismaService.resident.create({
       data: {
         ...createResidentDto,
         createdAt: new Date(),
@@ -19,7 +19,7 @@ export class ResidentService {
   }
 
   async updateResident(id: number, updateResidentDto: UpdateResidentDto) {
-    return this.prismaService.resident.update({
+    return await this.prismaService.resident.update({
       where: { id },
       data: updateResidentDto,
     });
@@ -50,7 +50,8 @@ export class ResidentService {
         key === 'residentPhone' ||
         key === 'communityId' ||
         key === 'buildingId' ||
-        key === 'houseId'
+        key === 'houseId' ||
+        key === 'residentType'
       ) {
         andWhere.push({
           [key]: {
