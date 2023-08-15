@@ -25,6 +25,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from './logger/logger.module';
 import { BullModule } from '@nestjs/bull';
+import { RepairModule } from './repair/repair.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { BullModule } from '@nestjs/bull';
     }),
     RedisModule,
     LoggerModule,
+    RepairModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { User } from '../decorators/user.decorator';
+import { User } from '../commons/decorators/user.decorator';
 import { RequestUser } from '../commons/constant/jwt.constant';
 import { UserService } from '../user/user.service';
-import { Permissions } from '../decorators/permission.decorator';
+import { Permissions } from '../commons/decorators/permission.decorator';
 import { Permission } from '../commons/enums/permission.enum';
 
 @Permissions(Permission.DASHBOARD)

@@ -8,7 +8,7 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-import { User } from '../decorators/user.decorator';
+import { User } from '../commons/decorators/user.decorator';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dtos/update-user.dto';
 import e, { Express } from 'express';

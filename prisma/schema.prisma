@@ -141,17 +141,30 @@ model RepairType {
 
 /// 报修表
 model Repair {
-  id           Int        @unique @default(autoincrement())
+  id           Int          @unique @default(autoincrement())
   /// 问题描述
-  repairDesc   String     @map("repair_desc") @db.VarChar(255)
-  createdAt    DateTime   @map("created_at")
-  updatedAt    DateTime   @updatedAt @map("updated_at")
-  repairTypeId Int        @map("repair_type_id")
-  repairType   RepairType @relation(fields: [repairTypeId], references: [id])
-  residentId   Int        @map("resident_id")
-  resident     Resident   @relation(fields: [residentId], references: [id])
+  repairDesc   String       @map("repair_desc") @db.VarChar(255)
+  serviceAt    DateTime     @map("service_at")
+  createdAt    DateTime     @map("created_at")
+  updatedAt    DateTime     @updatedAt @map("updated_at")
+  repairTypeId Int          @map("repair_type_id")
+  repairType   RepairType   @relation(fields: [repairTypeId], references: [id])
+  residentId   Int          @map("resident_id")
+  resident     Resident     @relation(fields: [residentId], references: [id])
+  repairFiles  RepairFile[]
 
   @@map("repair")
+}
+
+model RepairFile {
+  id        Int      @unique @default(autoincrement())
+  fileUrl   String   @map("file_url") @db.VarChar(100)
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  repairId  Int      @map("repair_id")
+  repair    Repair   @relation(fields: [repairId], references: [id])
+
+  @@map("repair_file")
 }
 
 // 角色表
@@ -243,16 +256,16 @@ model RoleMenus {
 
 /// 日志
 model Logger {
-  id     Int    @unique @default(autoincrement())
-  method String @db.VarChar(10)
-  url    String @db.VarChar(100)
-  query  String
-  param  String
-  body   Json
-	createdAt   DateTime  @map("created_at")
-	updatedAt   DateTime  @updatedAt @map("updated_at")
-  userId Int    @map("user_id")
-  user   User   @relation(fields: [userId], references: [id])
+  id        Int      @unique @default(autoincrement())
+  method    String   @db.VarChar(10)
+  url       String   @db.VarChar(100)
+  query     String
+  param     String
+  body      Json
+  createdAt DateTime @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id])
 
   @@map("logger")
 }

@@ -13,7 +13,7 @@ import { GetResidentDto } from './dtos/get-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ResidentService } from './resident.service';
 import { UserService } from '../user/user.service';
-import { User } from '../decorators/user.decorator';
+import { User } from '../commons/decorators/user.decorator';
 import { RequestUser } from '../commons/constant/jwt.constant';
 
 @Controller('resident')
