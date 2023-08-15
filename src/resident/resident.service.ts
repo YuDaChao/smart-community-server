@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { Prisma, VerifyStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateResidentDto } from './dtos/create-resident.dto';
@@ -49,11 +49,21 @@ export class ResidentService {
       if (
         key === 'residentPhone' ||
         key === 'communityId' ||
-        key === 'buildingId'
+        key === 'buildingId' ||
+        key === 'houseId'
       ) {
         andWhere.push({
           [key]: {
             equals: filters[key],
+          },
+        });
+      }
+      if (key === 'floorNo' || key === 'floorNumber') {
+        andWhere.push({
+          house: {
+            is: {
+              [key]: filters[key],
+            },
           },
         });
       }
@@ -85,6 +95,13 @@ export class ResidentService {
           select: {
             id: true,
             buildingName: true,
+          },
+        },
+        house: {
+          select: {
+            id: true,
+            floorNo: true,
+            floorNumber: true,
           },
         },
       },
