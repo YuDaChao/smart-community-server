@@ -4,6 +4,6 @@ import { RepairController } from './repair.controller';
 
 @Module({
   providers: [RepairService],
-  controllers: [RepairController]
+  controllers: [RepairController],
 })
 export class RepairModule {}
