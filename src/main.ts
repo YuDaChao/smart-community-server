@@ -34,6 +34,7 @@ async function bootstrap() {
   });
   // logger
   // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({

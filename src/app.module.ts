@@ -23,6 +23,8 @@ import * as path from 'path';
 import * as process from 'process';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { RedisModule } from './redis/redis.module';
+import { LoggerModule } from './logger/logger.module';
+import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { RedisModule } from './redis/redis.module';
     RoleModule,
     MenuModule,
     DashboardModule,
+    BullModule.forRoot({}),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [JwtConfig],
@@ -45,6 +48,7 @@ import { RedisModule } from './redis/redis.module';
       serveRoot: '/static',
     }),
     RedisModule,
+    LoggerModule,
   ],
   controllers: [AppController],
   providers: [

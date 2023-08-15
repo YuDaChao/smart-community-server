@@ -200,6 +200,7 @@ model User {
   community   Community @relation(fields: [communityId], references: [id])
   roleId      Int       @map("role_id")
   role        Role      @relation(fields: [roleId], references: [id])
+  loggers     Logger[]
 
   @@map("user")
 }
@@ -238,4 +239,20 @@ model RoleMenus {
 
   @@id([menuId, roleId])
   @@map("role_menu")
+}
+
+/// 日志
+model Logger {
+  id     Int    @unique @default(autoincrement())
+  method String @db.VarChar(10)
+  url    String @db.VarChar(100)
+  query  String
+  param  String
+  body   Json
+	createdAt   DateTime  @map("created_at")
+	updatedAt   DateTime  @updatedAt @map("updated_at")
+  userId Int    @map("user_id")
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("logger")
 }
