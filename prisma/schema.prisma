@@ -141,17 +141,18 @@ model RepairType {
 
 /// 报修表
 model Repair {
-  id           Int          @unique @default(autoincrement())
+  id             Int              @unique @default(autoincrement())
   /// 问题描述
-  repairDesc   String       @map("repair_desc") @db.VarChar(255)
-  serviceAt    DateTime     @map("service_at")
-  createdAt    DateTime     @map("created_at")
-  updatedAt    DateTime     @updatedAt @map("updated_at")
-  repairTypeId Int          @map("repair_type_id")
-  repairType   RepairType   @relation(fields: [repairTypeId], references: [id])
-  residentId   Int          @map("resident_id")
-  resident     Resident     @relation(fields: [residentId], references: [id])
-  repairFiles  RepairFile[]
+  repairDesc     String           @map("repair_desc") @db.VarChar(255)
+  serviceAt      DateTime         @map("service_at")
+  createdAt      DateTime         @map("created_at")
+  updatedAt      DateTime         @updatedAt @map("updated_at")
+  repairTypeId   Int              @map("repair_type_id")
+  repairType     RepairType       @relation(fields: [repairTypeId], references: [id])
+  residentId     Int              @map("resident_id")
+  resident       Resident         @relation(fields: [residentId], references: [id])
+  repairFiles    RepairFile[]
+  repairProgress RepairProgress[]
 
   @@map("repair")
 }
@@ -268,4 +269,44 @@ model Logger {
   user      User     @relation(fields: [userId], references: [id])
 
   @@map("logger")
+}
+
+// 维修进度流程
+model RepairProgress {
+  id                  Int                  @unique @default(autoincrement())
+  workflowId          Int                  @map("workflow_id")
+  workflow            workflowDict         @relation(fields: [workflowId], references: [id])
+  createdAt           DateTime             @map("created_at")
+  updatedAt           DateTime             @updatedAt @map("updated_at")
+  remark              String               @db.VarChar(100)
+  repairProgressFiles RepairProgressFile[]
+
+  repairId Int    @map("repair_id")
+  repair   Repair @relation(fields: [repairId], references: [id])
+
+  @@map("repair_progress")
+}
+
+model RepairProgressFile {
+  id               Int            @unique @default(autoincrement())
+  fileUrl          String         @map("file_url") @db.VarChar(100)
+  createdAt        DateTime       @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  repairProgressId Int            @map("repair_progress_id")
+  repairProgress   RepairProgress @relation(fields: [repairProgressId], references: [id])
+
+  @@map("repair_progress_file")
+}
+
+/// 工作流程表
+model workflowDict {
+  id             Int              @unique @default(autoincrement())
+  workflowName   String           @map("workflow_name") @db.VarChar(50)
+  workflowSort   Int              @map("workflow_sort")
+  modelType      Int              @map("model_type")
+	createdAt        DateTime       @map("created_at")
+	updatedAt        DateTime       @updatedAt @map("updated_at")
+  repairProgress RepairProgress[]
+
+  @@map("workflow_dict")
 }
