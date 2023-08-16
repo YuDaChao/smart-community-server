@@ -1,18 +1,18 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateLoggerDto } from './dtos/create-logger.dto';
-import { Queue } from 'bull';
-import { InjectQueue } from '@nestjs/bull';
+
+import { ClientProxy } from '@nestjs/microservices';
 import {
-  BULL_INSERT_LOGGER_PROCESS,
-  BULL_LOGGER_PROCESSOR,
-} from '../commons/constant/bull.constant';
+  RMQ_LOGGER,
+  RMQ_SERVER_NAME,
+} from '../commons/constant/rabbitmq.constant';
 
 @Injectable()
 export class LoggerService {
   constructor(
     private readonly prismaService: PrismaService,
-    @InjectQueue(BULL_LOGGER_PROCESSOR) private readonly loggerQueue: Queue,
+    @Inject(RMQ_SERVER_NAME) private readonly client: ClientProxy,
   ) {}
 
   async createLogger(createLoggerDto: CreateLoggerDto) {
@@ -25,10 +25,7 @@ export class LoggerService {
   }
 
   async addLoggerToQueue(createLoggerDto: CreateLoggerDto) {
-    const job = await this.loggerQueue.add(
-      BULL_INSERT_LOGGER_PROCESS,
-      createLoggerDto,
-    );
-    console.log(job.id);
+    this.client.send(RMQ_LOGGER, createLoggerDto).subscribe();
+    return 'success';
   }
 }

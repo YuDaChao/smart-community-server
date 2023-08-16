@@ -1,20 +1,27 @@
 import { Module } from '@nestjs/common';
 import { LoggerService } from './logger.service';
-import { BullModule } from '@nestjs/bull';
-import { BULL_LOGGER_PROCESSOR } from '../commons/constant/bull.constant';
-import { LoggerProcessor } from './logger-processor';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import {
+  RMQ_QUEUE_NAME,
+  RMQ_SERVER_NAME,
+} from '../commons/constant/rabbitmq.constant';
+import { LoggerController } from './logger.controller';
 
 @Module({
   imports: [
-    BullModule.registerQueue({
-      name: BULL_LOGGER_PROCESSOR,
-      redis: {
-        host: 'localhost',
-        port: 6379,
+    ClientsModule.register([
+      {
+        name: RMQ_SERVER_NAME,
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://localhost:5672'],
+          queue: RMQ_QUEUE_NAME,
+        },
       },
-    }),
+    ]),
   ],
-  providers: [LoggerService, LoggerProcessor],
-  exports: [LoggerService, LoggerProcessor],
+  providers: [LoggerService],
+  exports: [LoggerService],
+  controllers: [LoggerController],
 })
 export class LoggerModule {}
