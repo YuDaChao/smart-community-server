@@ -321,6 +321,8 @@ model WorkflowAction {
   workflow       Workflow  @relation("action_workflow_id", fields: [workflowId], references: [id], map: "action_workflow_id")
   nextWorkflowId Int?      @map("next_workflow_id")
   nextWorkflow   Workflow? @relation("next_action_workflow_id", fields: [workflowId], references: [id], map: "next_action_workflow_id")
+  createdAt      DateTime  @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
 
   @@map("workflow_action")
 }
