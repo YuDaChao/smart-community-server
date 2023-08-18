@@ -275,10 +275,10 @@ model Logger {
 model RepairProgress {
   id                  Int                  @unique @default(autoincrement())
   workflowId          Int                  @map("workflow_id")
-  workflow            workflowDict         @relation(fields: [workflowId], references: [id])
+  workflow            Workflow             @relation(fields: [workflowId], references: [id])
   createdAt           DateTime             @map("created_at")
   updatedAt           DateTime             @updatedAt @map("updated_at")
-  remark              String               @db.VarChar(100)
+  remark              String?              @db.VarChar(100)
   repairProgressFiles RepairProgressFile[]
 
   repairId Int    @map("repair_id")
@@ -299,14 +299,28 @@ model RepairProgressFile {
 }
 
 /// 工作流程表
-model workflowDict {
-  id             Int              @unique @default(autoincrement())
-  workflowName   String           @map("workflow_name") @db.VarChar(50)
-  workflowSort   Int              @map("workflow_sort")
-  modelType      Int              @map("model_type")
-	createdAt        DateTime       @map("created_at")
-	updatedAt        DateTime       @updatedAt @map("updated_at")
-  repairProgress RepairProgress[]
+model Workflow {
+  id                  Int              @unique @default(autoincrement())
+  workflowName        String           @map("workflow_name") @db.VarChar(50)
+  workflowSort        Int              @map("workflow_sort")
+  modelType           Int              @map("model_type")
+  /// 标识是否是最终步骤（1表示是，0表示否）
+  isFinal             Int              @default(0) @map("is_final") @db.TinyInt()
+  createdAt           DateTime         @map("created_at")
+  updatedAt           DateTime         @updatedAt @map("updated_at")
+  repairProgress      RepairProgress[]
+  workflowActions     WorkflowAction[] @relation("action_workflow_id")
+  nextWorkflowActions WorkflowAction[] @relation("next_action_workflow_id")
 
-  @@map("workflow_dict")
+  @@map("workflow")
+}
+
+model WorkflowAction {
+  id             Int       @unique @default(autoincrement())
+  workflowId     Int       @map("workflow_id")
+  workflow       Workflow  @relation("action_workflow_id", fields: [workflowId], references: [id], map: "action_workflow_id")
+  nextWorkflowId Int?      @map("next_workflow_id")
+  nextWorkflow   Workflow? @relation("next_action_workflow_id", fields: [workflowId], references: [id], map: "next_action_workflow_id")
+
+  @@map("workflow_action")
 }

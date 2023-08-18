@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  Param,
+  ParseIntPipe,
   Post,
   UploadedFiles,
   UseInterceptors,
@@ -46,5 +48,10 @@ export class RepairController {
   @Get()
   async getRepairList() {
     return await this.repairService.getRepairList();
+  }
+
+  @Get(':repairId')
+  async getRepairInfo(@Param('repairId', new ParseIntPipe()) repairId: number) {
+    return this.repairService.getRepairById(repairId);
   }
 }

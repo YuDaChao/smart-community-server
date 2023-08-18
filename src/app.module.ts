@@ -31,6 +31,7 @@ import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from './logger/logger.module';
 import { BullModule } from '@nestjs/bull';
 import { RepairModule } from './repair/repair.module';
+import { WorkflowModule } from './workflow/workflow.module';
 
 @Module({
   imports: [
@@ -56,6 +57,7 @@ import { RepairModule } from './repair/repair.module';
     RedisModule,
     LoggerModule,
     RepairModule,
+    WorkflowModule,
   ],
   controllers: [AppController],
   providers: [
