@@ -18,7 +18,10 @@ export class LoggerMiddleware implements NestMiddleware {
           query: JSON.stringify(query),
           param: JSON.stringify(params),
           body: body as object,
-          userId: (req[REQUEST_USER_KEY] as RequestUser).id,
+          userId:
+            baseUrl === '/auth/signup'
+              ? null
+              : (req[REQUEST_USER_KEY] as RequestUser).id,
         });
       }
     } finally {

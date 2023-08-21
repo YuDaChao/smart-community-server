@@ -20,6 +20,7 @@ export class RepairService {
     return await this.prismaService.repair.create({
       data: {
         ...createRepairDto,
+        repairStatus: true,
         createdAt: new Date(),
         residentId: 1,
         repairFiles: {
@@ -32,7 +33,6 @@ export class RepairService {
           create: {
             workflowId: 1,
             createdAt: new Date(),
-            remark: '已受理',
           },
         },
       },

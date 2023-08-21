@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `menu` ADD COLUMN `menu_status` ENUM('ENABLE', 'DISABLE') NOT NULL DEFAULT 'ENABLE';

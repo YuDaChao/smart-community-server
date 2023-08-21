@@ -145,6 +145,8 @@ model Repair {
   /// 问题描述
   repairDesc     String           @map("repair_desc") @db.VarChar(255)
   serviceAt      DateTime         @map("service_at")
+  /// true 开启 false 关闭
+  repairStatus   Boolean
   createdAt      DateTime         @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")
   repairTypeId   Int              @map("repair_type_id")
@@ -265,8 +267,8 @@ model Logger {
   body      Json
   createdAt DateTime @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  userId    Int      @map("user_id")
-  user      User     @relation(fields: [userId], references: [id])
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id])
 
   @@map("logger")
 }
@@ -320,7 +322,7 @@ model WorkflowAction {
   workflowId     Int       @map("workflow_id")
   workflow       Workflow  @relation("action_workflow_id", fields: [workflowId], references: [id], map: "action_workflow_id")
   nextWorkflowId Int?      @map("next_workflow_id")
-  nextWorkflow   Workflow? @relation("next_action_workflow_id", fields: [workflowId], references: [id], map: "next_action_workflow_id")
+  nextWorkflow   Workflow? @relation("next_action_workflow_id", fields: [nextWorkflowId], references: [id], map: "next_action_workflow_id")
   createdAt      DateTime  @map("created_at")
   updatedAt      DateTime  @updatedAt @map("updated_at")
 
