@@ -19,6 +19,7 @@ specifiers:
   '@types/jest': ^29.5.2
   '@types/multer': ^1.4.7
   '@types/node': ^20.3.1
+  '@types/nodemailer': ^6.4.9
   '@types/supertest': ^2.0.12
   '@typescript-eslint/eslint-plugin': ^5.59.11
   '@typescript-eslint/parser': ^5.59.11
@@ -36,6 +37,7 @@ specifiers:
   eslint-plugin-prettier: ^4.2.1
   jest: ^29.5.0
   nest-winston: ^1.9.3
+  nodemailer: ^6.9.4
   prettier: ^2.8.8
   prisma: ^5.0.0
   redis: ^4.6.7
@@ -69,6 +71,7 @@ dependencies:
   class-validator: registry.npmmirror.com/class-validator/0.14.0
   dotenv: registry.npmmirror.com/dotenv/16.3.1
   nest-winston: registry.npmmirror.com/nest-winston/1.9.3_776jopkp4b2w7dmaup522nhcvq
+  nodemailer: registry.npmmirror.com/nodemailer/6.9.4
   redis: registry.npmmirror.com/redis/4.6.7
   reflect-metadata: registry.npmmirror.com/reflect-metadata/0.1.13
   rxjs: registry.npmmirror.com/rxjs/7.8.1
@@ -83,6 +86,7 @@ devDependencies:
   '@types/jest': registry.npmmirror.com/@types/jest/29.5.3
   '@types/multer': registry.npmmirror.com/@types/multer/1.4.7
   '@types/node': registry.npmmirror.com/@types/node/20.4.5
+  '@types/nodemailer': registry.npmmirror.com/@types/nodemailer/6.4.9
   '@types/supertest': registry.npmmirror.com/@types/supertest/2.0.12
   '@typescript-eslint/eslint-plugin': registry.npmmirror.com/@typescript-eslint/eslint-plugin/5.62.0_c42x62htuvinjyo6sqia6oy3e4
   '@typescript-eslint/parser': registry.npmmirror.com/@typescript-eslint/parser/5.62.0_7haavtekmro7ptbnqmctjaodju
@@ -1914,6 +1918,14 @@ packages:
     resolution: {integrity: sha512-rt40Nk13II9JwQBdeYqmbn2Q6IVTA5uPhvSO+JVqdXw/6/4glI6oR9ezty/A9Hg5u7JH4OmYmuQ+XvjKm0Datg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/node/-/node-20.4.5.tgz}
     name: '@types/node'
     version: 20.4.5
+
+  registry.npmmirror.com/@types/nodemailer/6.4.9:
+    resolution: {integrity: sha512-XYG8Gv+sHjaOtUpiuytahMy2mM3rectgroNbs6R3djZEKmPNiIJwe9KqOJBGzKKnNZNKvnuvmugBgpq3w/S0ig==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/nodemailer/-/nodemailer-6.4.9.tgz}
+    name: '@types/nodemailer'
+    version: 6.4.9
+    dependencies:
+      '@types/node': registry.npmmirror.com/@types/node/20.4.5
+    dev: true
 
   registry.npmmirror.com/@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/parse-json/-/parse-json-4.0.0.tgz}
@@ -5777,6 +5789,13 @@ packages:
     name: node-releases
     version: 2.0.13
     dev: true
+
+  registry.npmmirror.com/nodemailer/6.9.4:
+    resolution: {integrity: sha512-CXjQvrQZV4+6X5wP6ZIgdehJamI63MFoYFGGPtHudWym9qaEHDNdPzaj5bfMCvxG1vhAileSWW90q7nL0N36mA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/nodemailer/-/nodemailer-6.9.4.tgz}
+    name: nodemailer
+    version: 6.9.4
+    engines: {node: '>=6.0.0'}
+    dev: false
 
   registry.npmmirror.com/nopt/5.0.0:
     resolution: {integrity: sha512-Tbj67rffqceeLpcRXrT7vKAN8CwfPeIBgM7E6iBkmKLV7bEMwpGgYLGv0jACUsECaa/vuxP0IjEont6umdMgtQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/nopt/-/nopt-5.0.0.tgz}

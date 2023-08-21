@@ -27,6 +27,8 @@ import { LoggerModule } from './logger/logger.module';
 import { BullModule } from '@nestjs/bull';
 import { RepairModule } from './repair/repair.module';
 import { WorkflowModule } from './workflow/workflow.module';
+import { MailerModule } from './mailer/mailer.module';
+import { MailerService } from './mailer/mailer.service';
 
 @Module({
   imports: [
@@ -53,6 +55,15 @@ import { WorkflowModule } from './workflow/workflow.module';
     LoggerModule,
     RepairModule,
     WorkflowModule,
+    MailerModule.forRoot({
+      host: 'smtp.forwardemail.net',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM',
+        pass: 'REPLACE-WITH-YOUR-GENERATED-PASSWORD',
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -63,6 +74,7 @@ import { WorkflowModule } from './workflow/workflow.module';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
+    MailerService,
   ],
 })
 export class AppModule implements NestModule {

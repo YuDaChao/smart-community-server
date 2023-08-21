@@ -3,6 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateRepairDto } from './dtos/create-repair.dto';
 import { UpdateRepairProcessDto } from './dtos/update-repair-process.dto';
 import { WorkflowService } from '../workflow/workflow.service';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class RepairService {
@@ -52,8 +53,12 @@ export class RepairService {
   }
 
   async getRepairList() {
-    const count = await this.prismaService.repair.count();
+    const where: Prisma.RepairWhereInput = {
+      repairStatus: true,
+    };
+    const count = await this.prismaService.repair.count({ where });
     const list = await this.prismaService.repair.findMany({
+      where,
       include: {
         resident: {
           select: {
