@@ -23,7 +23,6 @@ export class RepairService {
         ...createRepairDto,
         repairStatus: true,
         createdAt: new Date(),
-        residentId: 1,
         repairFiles: {
           create: repairFiles.map((file) => ({
             fileUrl: file,

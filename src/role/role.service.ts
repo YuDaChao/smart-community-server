@@ -11,34 +11,6 @@ export class RoleService {
   ) {}
 
   /**
-   * 根据角色 获取菜单列表
-   * @param roleId 角色 id
-   */
-  async getMenusByRoleId(roleId: number) {
-    const menus = await this.prismaService.roleMenus.findMany({
-      where: {
-        roleId,
-      },
-      select: {
-        menuId: true,
-      },
-    });
-    // 一级菜单 ids
-    const menuIds = menus.map((menu) => menu.menuId);
-    // // 子菜单 ids[]
-    // const childIds = menus
-    //   .filter((menu) => menu.menu.parentId !== null)
-    //   .map((menu) => menu.menuId);
-    //
-    // const [parentMenus, childMenus] = await Promise.all([
-    //   this.menuService.getMenusByIds(parentIds),
-    //   this.menuService.getMenusByIds(childIds),
-    // ]);
-
-    return this.menuService.getMenusByIds(menuIds);
-  }
-
-  /**
    * 根据角色获取权限列表
    * @param roleId
    */

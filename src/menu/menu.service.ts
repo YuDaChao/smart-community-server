@@ -1,10 +1,45 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { MenuStatus } from '@prisma/client';
+import { MenuStatus, Prisma } from '@prisma/client';
+import { MenuEntity } from './entity/menu.entity';
 
 @Injectable()
 export class MenuService {
-  constructor(private readonly prismaService: PrismaService) {}
+  private readonly menuSelect: Prisma.MenuSelect;
+  private readonly menuOrderBy: Prisma.MenuOrderByWithRelationInput[];
+
+  constructor(private readonly prismaService: PrismaService) {
+    this.menuSelect = {
+      id: true,
+      menuName: true,
+      menuPath: true,
+      menuIcon: true,
+    };
+    this.menuOrderBy = [
+      { menuPriority: 'desc' },
+      { createdAt: 'asc' },
+      { updatedAt: 'asc' },
+    ];
+  }
+
+  /**
+   * 根据角色 获取菜单列表
+   * @param roleId 角色 id
+   */
+  async getMenusByRoleId(roleId: number) {
+    const menus = await this.prismaService.roleMenus.findMany({
+      where: {
+        roleId,
+      },
+      select: {
+        menuId: true,
+      },
+    });
+    // 一级菜单 ids
+    const menuIds = menus.map((menu) => menu.menuId);
+
+    return this.getMenusByIds(menuIds);
+  }
 
   /**
    * 根据菜单 ids 获取菜单列表
@@ -14,30 +49,26 @@ export class MenuService {
     if (menuIds.length === 0) {
       return [];
     }
+    const menuWhere: Prisma.MenuWhereInput = {
+      menuStatus: MenuStatus.ENABLE,
+      id: { in: menuIds },
+    };
     return await this.prismaService.menu.findMany({
       where: {
         parentId: null,
-        menuStatus: MenuStatus.ENABLE,
-        id: { in: menuIds },
+        ...menuWhere,
       },
-      include: {
+      select: {
+        ...this.menuSelect,
         children: {
           where: {
-            menuStatus: MenuStatus.ENABLE,
-            id: { in: menuIds },
+            ...menuWhere,
           },
-          orderBy: [
-            { menuPriority: 'desc' },
-            { createdAt: 'asc' },
-            { updatedAt: 'asc' },
-          ],
+          select: this.menuSelect,
+          orderBy: this.menuOrderBy,
         },
       },
-      orderBy: [
-        { menuPriority: 'desc' },
-        { createdAt: 'asc' },
-        { updatedAt: 'asc' },
-      ],
+      orderBy: this.menuOrderBy,
     });
   }
 
@@ -50,18 +81,16 @@ export class MenuService {
         parentId: null,
         menuStatus: MenuStatus.ENABLE,
       },
-      include: {
+      select: {
+        ...this.menuSelect,
         children: {
           where: {
             menuStatus: MenuStatus.ENABLE,
           },
+          select: this.menuSelect,
         },
       },
-      orderBy: [
-        { menuPriority: 'asc' },
-        { createdAt: 'asc' },
-        { updatedAt: 'asc' },
-      ],
+      orderBy: this.menuOrderBy,
     });
   }
 }

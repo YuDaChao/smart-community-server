@@ -146,7 +146,7 @@ model Repair {
   repairDesc     String           @map("repair_desc") @db.VarChar(255)
   serviceAt      DateTime         @map("service_at")
   /// true 开启 false 关闭
-  repairStatus   Boolean
+  repairStatus   Boolean          @map("repair_status")
   createdAt      DateTime         @map("created_at")
   updatedAt      DateTime         @updatedAt @map("updated_at")
   repairTypeId   Int              @map("repair_type_id")
@@ -206,16 +206,16 @@ model RolePermissions {
 }
 
 model User {
-  id          Int       @unique @default(autoincrement())
-  userName    String    @unique @map("user_name") @db.VarChar(50)
-  password    String    @db.VarChar(100)
-  avatar      String?   @db.VarChar(100)
-  createdAt   DateTime  @map("created_at")
-  updatedAt   DateTime  @updatedAt @map("updated_at")
-  communityId Int       @map("community_id")
-  community   Community @relation(fields: [communityId], references: [id])
-  roleId      Int       @map("role_id")
-  role        Role      @relation(fields: [roleId], references: [id])
+  id          Int        @unique @default(autoincrement())
+  userName    String     @unique @map("user_name") @db.VarChar(50)
+  password    String     @db.VarChar(100)
+  avatar      String?    @db.VarChar(100)
+  createdAt   DateTime   @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
+  communityId Int?       @map("community_id")
+  community   Community? @relation(fields: [communityId], references: [id])
+  roleId      Int        @map("role_id")
+  role        Role       @relation(fields: [roleId], references: [id])
   loggers     Logger[]
 
   @@map("user")

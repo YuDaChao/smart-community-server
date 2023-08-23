@@ -1,4 +1,10 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AppController } from './app.controller';
@@ -17,7 +23,7 @@ import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
 import { LoggerMiddleware } from './commons/middlewares/logger.middleware';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { APP_FILTER } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpExceptionFilter } from './commons/filters/http-exception.filter';
 import * as path from 'path';
 import * as process from 'process';
@@ -27,8 +33,6 @@ import { LoggerModule } from './logger/logger.module';
 import { BullModule } from '@nestjs/bull';
 import { RepairModule } from './repair/repair.module';
 import { WorkflowModule } from './workflow/workflow.module';
-import { MailerModule } from './mailer/mailer.module';
-import { MailerService } from './mailer/mailer.service';
 
 @Module({
   imports: [
@@ -55,15 +59,6 @@ import { MailerService } from './mailer/mailer.service';
     LoggerModule,
     RepairModule,
     WorkflowModule,
-    MailerModule.forRoot({
-      host: 'smtp.forwardemail.net',
-      port: 465,
-      secure: true,
-      auth: {
-        user: 'REPLACE-WITH-YOUR-ALIAS@YOURDOMAIN.COM',
-        pass: 'REPLACE-WITH-YOUR-GENERATED-PASSWORD',
-      },
-    }),
   ],
   controllers: [AppController],
   providers: [
@@ -74,11 +69,21 @@ import { MailerService } from './mailer/mailer.service';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
-    MailerService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(JwtMiddleware, LoggerMiddleware).forRoutes('*');
+    consumer
+      .apply(JwtMiddleware)
+      .forRoutes('*')
+      .apply(LoggerMiddleware)
+      .exclude(
+        { path: '*', method: RequestMethod.GET },
+        { path: '*', method: RequestMethod.OPTIONS },
+      );
   }
 }

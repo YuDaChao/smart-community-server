@@ -10,4 +10,7 @@ export class CreateRepairDto {
   @IsNumber()
   @Type(() => Number)
   repairTypeId: number;
+  @IsNumber()
+  @Type(() => Number)
+  residentId: number;
 }

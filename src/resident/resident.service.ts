@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, VerifyStatus } from '@prisma/client';
+import {Prisma, ResidentType, VerifyStatus} from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { GetResidentDto } from './dtos/get-resident.dto';
@@ -117,7 +117,7 @@ export class ResidentService {
   }
 
   /**
-   * 查询小区总人数 已认证的
+   * 查询小区入住人数 已认证的
    * @param communityId
    */
   async getResidentCountByCommunityId(communityId?: number) {
@@ -132,7 +132,23 @@ export class ResidentService {
   }
 
   /**
-   * 统计小区住户房屋类型人数
+   * 查询小区租户人数 已认证的
+   * @param communityId
+   */
+  async getResidentTenantCountByCommunityId(communityId?: number) {
+    const andWhere: Prisma.ResidentWhereInput[] = [
+      { verifyStatus: VerifyStatus.SUCCESS },
+      { residentType: ResidentType.TENANT },
+    ];
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      andWhere.push({ communityId });
+    }
+    return this.prismaService.resident.count({ where: { AND: andWhere } });
+  }
+
+  /**
+   * 统计小区住户房屋类型数
    * @param communityId
    */
   async getResidentHouseStatusCountByCommunityId(communityId?: number) {

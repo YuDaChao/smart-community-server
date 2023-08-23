@@ -65,20 +65,18 @@ export class UserService {
   }
 
   /**
-   * 根据用户 id 获取用户基本信息 （所属社区，角色，权限，区域）以及 菜单信息
+   * 根据用户 id 获取用户基本信息 （所属社区，角色，权限，区域）
    * @param userId
    */
   async getUserInfoById(userId: number) {
     const userAndCommunity = await this.getUserAndRelationInfo(userId);
     const { community, role, ...user } = userAndCommunity;
     let area: Partial<Area>;
-    let menuList: Partial<Menu>[] = [];
     let permissionList = [];
-    if (community.areaId) {
+    if (community?.areaId) {
       area = await this.areaService.getRecursiveAreaInfoById(community.areaId);
     }
     if (user.roleId) {
-      menuList = await this.roleService.getMenusByRoleId(user.roleId);
       permissionList = await this.roleService.getPermissionsByRoleId(
         user.roleId,
       );
@@ -87,7 +85,6 @@ export class UserService {
       ...user,
       ...community,
       ...role,
-      menus: menuList,
       permissions: permissionList,
       area,
     };
