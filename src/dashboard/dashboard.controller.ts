@@ -22,8 +22,7 @@ export class DashboardController {
      * 2. 超级管理员可以查看所有小区的住户
      */
     const userInfo = await this.userService.getUserRoleInfoById(user.id);
-    const communityId =
-      userInfo.roleId === 1 ? undefined : userInfo.communityId;
+    const communityId = userInfo.communityId;
     return this.dashboardService.getResidentOverview(communityId);
   }
 }

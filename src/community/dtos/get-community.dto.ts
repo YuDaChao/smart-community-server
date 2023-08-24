@@ -28,4 +28,9 @@ export class GetCommunityDto {
   @ValidateNested({ each: true })
   @Type(() => Date)
   createdAt: [Date, Date];
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  @Type(() => Number)
+  communityId: number;
 }
