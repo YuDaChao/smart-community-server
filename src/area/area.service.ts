@@ -34,4 +34,36 @@ export class AreaService {
       },
     });
   }
+
+  /**
+   * 根据名称验证获取 id，验证城市名称是否正确
+   * @param provinceName
+   * @param cityName
+   * @param areaName
+   */
+  async getAreaIdByName(
+    provinceName: string,
+    cityName: string,
+    areaName: string,
+  ) {
+    const areas = await this.prismaService.area.findMany({
+      where: {
+        areaName: { equals: areaName },
+      },
+      select: {
+        id: true,
+        parent: {
+          where: { areaName: { equals: cityName } },
+          select: {
+            id: true,
+            parent: {
+              where: { areaName: { equals: provinceName } },
+              select: { id: true },
+            },
+          },
+        },
+      },
+    });
+    return areas.map((area) => area.id);
+  }
 }

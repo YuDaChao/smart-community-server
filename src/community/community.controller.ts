@@ -6,7 +6,7 @@ import {
   ParseIntPipe,
   Post,
   Put,
-  Query,
+  Query, UploadedFile, UseInterceptors,
 } from '@nestjs/common';
 import { CommunityService } from './community.service';
 import { CreateCommunityDto } from './dtos/create-community.dto';
@@ -15,6 +15,8 @@ import { UpdateCommunityDto } from './dtos/update-community.dto';
 import { User } from '../commons/decorators/user.decorator';
 import { RequestUser } from '../commons/constant/jwt.constant';
 import { UserService } from '../user/user.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import {Express} from 'express';
 
 @Controller('community')
 export class CommunityController {
@@ -63,5 +65,11 @@ export class CommunityController {
       communityId,
       updateCommunityDto,
     );
+  }
+
+  @Post('/export')
+  @UseInterceptors(FileInterceptor('file'))
+  async batchExportCommunity(@UploadedFile() file: Express.Multer.File) {
+    return await this.communityService.batchExportCommunity(file);
   }
 }
