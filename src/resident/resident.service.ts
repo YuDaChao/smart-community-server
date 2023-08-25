@@ -103,6 +103,7 @@ export class ResidentService {
             id: true,
             floorNo: true,
             floorNumber: true,
+            houseStatus: true,
           },
         },
       },
