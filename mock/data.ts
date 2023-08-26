@@ -8,6 +8,9 @@ import {
   HouseStatus,
   Menu,
   Permission,
+  House,
+  ResidentType,
+  MenuStatus,
 } from '@prisma/client';
 
 const createdAt = new Date();
@@ -261,45 +264,54 @@ export const building: Building[] = [
   },
 ];
 
+export const house: House[] = [
+  {
+    id: 1,
+    floorNumber: 1,
+    floorNo: '1101',
+    houseStatus: HouseStatus.SELF_OCCUPIED,
+    createdAt,
+    updatedAt: createdAt,
+    buildingId: 1,
+  },
+];
+
 export const resident: Resident[] = [
   {
     id: 1,
     residentName: '赵三',
     residentPhone: '18827563323',
-    floorNumber: 11,
-    floorNo: '1101',
-    certificationStatus: VerifyStatus.PROCESSING,
-    houseStatus: HouseStatus.SELF_OCCUPIED,
+    residentType: ResidentType.OWNER,
+    verifyStatus: VerifyStatus.SUCCESS,
     createdAt,
     updatedAt: createdAt,
     communityId: 1,
     buildingId: 1,
+    houseId: 1,
   },
   {
     id: 2,
-    residentName: ' 李四',
-    residentPhone: '18827563344',
-    floorNumber: 13,
-    floorNo: '1204',
-    certificationStatus: VerifyStatus.SUCCESS,
-    houseStatus: HouseStatus.HIRE,
+    residentName: '李斯',
+    residentPhone: '18827563323',
+    residentType: ResidentType.OWNER,
+    verifyStatus: VerifyStatus.SUCCESS,
     createdAt,
     updatedAt: createdAt,
-    communityId: 2,
-    buildingId: 2,
+    communityId: 1,
+    buildingId: 1,
+    houseId: 1,
   },
   {
     id: 3,
     residentName: '赵六',
     residentPhone: '18827563388',
-    floorNumber: 16,
-    floorNo: '1606',
-    certificationStatus: VerifyStatus.ERROR,
-    houseStatus: HouseStatus.IDLE,
+    residentType: ResidentType.OWNER,
+    verifyStatus: VerifyStatus.SUCCESS,
     createdAt,
     updatedAt: createdAt,
     communityId: 2,
     buildingId: 1,
+    houseId: 1,
   },
 ];
 
@@ -333,6 +345,8 @@ export const menu: Menu[] = [
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 1000,
   },
   {
     id: 2,
@@ -342,6 +356,8 @@ export const menu: Menu[] = [
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 999,
   },
   {
     id: 3,
@@ -351,6 +367,8 @@ export const menu: Menu[] = [
     parentId: 2,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 901,
   },
   {
     id: 4,
@@ -360,6 +378,8 @@ export const menu: Menu[] = [
     parentId: 2,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 900,
   },
   {
     id: 5,
@@ -369,6 +389,8 @@ export const menu: Menu[] = [
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 998,
   },
   {
     id: 6,
@@ -378,6 +400,8 @@ export const menu: Menu[] = [
     parentId: 5,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 904,
   },
   {
     id: 7,
@@ -387,6 +411,8 @@ export const menu: Menu[] = [
     parentId: 5,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 903,
   },
   {
     id: 8,
@@ -396,15 +422,19 @@ export const menu: Menu[] = [
     parentId: 5,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 997,
   },
   {
     id: 9,
     menuName: ' 物业管理',
     menuIcon: 'manager',
-    menuPath: 'manager',
+    menuPath: '/manager',
     parentId: null,
     createdAt,
     updatedAt: createdAt,
+    menuStatus: MenuStatus.ENABLE,
+    menuPriority: 996,
   },
 ];
 

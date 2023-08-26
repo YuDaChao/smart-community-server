@@ -1,6 +1,8 @@
 # compiled output
 /dist
 /node_modules
+/volumes/
+/images/
 
 # Logs
 logs
@@ -40,3 +42,4 @@ lerna-debug.log*
 .flaskenv*
 !.env.project
 !.env.vault
+

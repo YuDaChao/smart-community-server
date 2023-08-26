@@ -13,8 +13,8 @@ import { GetResidentDto } from './dtos/get-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
 import { ResidentService } from './resident.service';
 import { UserService } from '../user/user.service';
-import { User } from '../decorators/user.decorator';
-import { RequestUser } from '../constant/jwt.constant';
+import { User } from '../commons/decorators/user.decorator';
+import { RequestUser } from '../commons/constant/jwt.constant';
 
 @Controller('resident')
 export class ResidentController {
@@ -54,7 +54,7 @@ export class ResidentController {
       ...getResidentDto,
     };
     // 1. 小区管理员只能查看本小区的住户
-    if (userInfo.roleId === 1) {
+    if (userInfo.communityId) {
       query.communityId = userInfo.communityId;
     }
     return this.residentService.getResidentList(query);
@@ -68,8 +68,7 @@ export class ResidentController {
      * 2. 超级管理员可以查看所有小区的住户
      */
     const userInfo = await this.userService.getUserRoleInfoById(user.id);
-    const communityId =
-      userInfo.roleId === 1 ? undefined : userInfo.communityId;
+    const communityId = userInfo.communityId;
     return this.residentService.getResidentCountByCommunityId(communityId);
   }
 
@@ -81,8 +80,7 @@ export class ResidentController {
      * 2. 超级管理员可以查看所有小区的住户
      */
     const userInfo = await this.userService.getUserRoleInfoById(user.id);
-    const communityId =
-      userInfo.roleId === 1 ? undefined : userInfo.communityId;
+    const communityId = userInfo.communityId;
     return this.residentService.getResidentHouseStatusCountByCommunityId(
       communityId,
     );
@@ -96,8 +94,7 @@ export class ResidentController {
      * 2. 超级管理员可以查看所有小区的住户
      */
     const userInfo = await this.userService.getUserRoleInfoById(user.id);
-    const communityId =
-      userInfo.roleId === 1 ? undefined : userInfo.communityId;
+    const communityId = userInfo.communityId;
     return this.residentService.getResidentCertificationStatusCountByCommunityId(
       communityId,
     );

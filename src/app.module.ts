@@ -1,10 +1,16 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import {
+  ClassSerializerInterceptor,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import JwtConfig from './config/jwt.config';
-import { JwtMiddleware } from './middlewares/jwt.middleware';
+import JwtConfig from './commons/config/jwt.config';
+import { JwtMiddleware } from './commons/middlewares/jwt.middleware';
 import { PrismaModule } from './prisma/prisma.module';
 import { HashingModule } from './hashing/hashing.module';
 import { BcryptService } from './bcrypt/bcrypt.service';
@@ -15,13 +21,18 @@ import { CommunityModule } from './community/community.module';
 import { ResidentModule } from './resident/resident.module';
 import { RoleModule } from './role/role.module';
 import { MenuModule } from './menu/menu.module';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { LoggerMiddleware } from './commons/middlewares/logger.middleware';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { APP_FILTER } from '@nestjs/core';
-import { HttpExceptionFilter } from './filters/http-exception.filter';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpExceptionFilter } from './commons/filters/http-exception.filter';
 import * as path from 'path';
 import * as process from 'process';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { RedisModule } from './redis/redis.module';
+import { LoggerModule } from './logger/logger.module';
+import { BullModule } from '@nestjs/bull';
+import { RepairModule } from './repair/repair.module';
+import { WorkflowModule } from './workflow/workflow.module';
 
 @Module({
   imports: [
@@ -35,6 +46,7 @@ import { ServeStaticModule } from '@nestjs/serve-static';
     RoleModule,
     MenuModule,
     DashboardModule,
+    BullModule.forRoot({}),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [JwtConfig],
@@ -43,6 +55,10 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       rootPath: path.join(process.cwd(), 'images'),
       serveRoot: '/static',
     }),
+    RedisModule,
+    LoggerModule,
+    RepairModule,
+    WorkflowModule,
   ],
   controllers: [AppController],
   providers: [
@@ -53,10 +69,21 @@ import { ServeStaticModule } from '@nestjs/serve-static';
       provide: APP_FILTER,
       useClass: HttpExceptionFilter,
     },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ClassSerializerInterceptor,
+    },
   ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(JwtMiddleware, LoggerMiddleware).forRoutes('*');
+    consumer
+      .apply(JwtMiddleware)
+      .forRoutes('*')
+      .apply(LoggerMiddleware)
+      .exclude(
+        { path: '*', method: RequestMethod.GET },
+        { path: '*', method: RequestMethod.OPTIONS },
+      );
   }
 }

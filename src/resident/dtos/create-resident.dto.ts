@@ -1,21 +1,27 @@
-import { IsNumber, Matches, IsPositive, IsString } from 'class-validator';
+import {
+  IsNumber,
+  Matches,
+  IsPositive,
+  IsString,
+  IsEnum,
+} from 'class-validator';
 import { Type } from 'class-transformer';
+import { ResidentType } from '@prisma/client';
 
 export class CreateResidentDto {
   @IsString()
   residentName: string;
   @Matches(/^[1-8]\d{10}$/)
   residentPhone: string;
-  @IsNumber()
-  @IsPositive()
-  @Type(() => Number)
-  floorNumber: number;
-  @IsString()
-  floorNo: string;
+  @IsEnum(ResidentType)
+  residentType: ResidentType;
   @IsNumber()
   @Type(() => Number)
   communityId: number;
   @IsNumber()
   @Type(() => Number)
   buildingId: number;
+  @IsNumber()
+  @Type(() => Number)
+  houseId: number;
 }

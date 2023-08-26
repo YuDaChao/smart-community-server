@@ -1,9 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { User } from '../decorators/user.decorator';
-import { RequestUser } from '../constant/jwt.constant';
+import { User } from '../commons/decorators/user.decorator';
+import { RequestUser } from '../commons/constant/jwt.constant';
 import { UserService } from '../user/user.service';
-import { Permissions } from '../decorators/permission.decorator';
+import { Permissions } from '../commons/decorators/permission.decorator';
 import { Permission } from '../commons/enums/permission.enum';
 
 @Permissions(Permission.DASHBOARD)
@@ -22,8 +22,7 @@ export class DashboardController {
      * 2. 超级管理员可以查看所有小区的住户
      */
     const userInfo = await this.userService.getUserRoleInfoById(user.id);
-    const communityId =
-      userInfo.roleId === 1 ? undefined : userInfo.communityId;
+    const communityId = userInfo.communityId;
     return this.dashboardService.getResidentOverview(communityId);
   }
 }

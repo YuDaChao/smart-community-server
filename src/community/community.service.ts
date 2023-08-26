@@ -13,8 +13,14 @@ export class CommunityService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async getCommunityListByPage(getCommunityDto: GetCommunityDto) {
-    const { current, pageSize, communityAddress, communityName, createdAt } =
-      getCommunityDto;
+    const {
+      current,
+      pageSize,
+      communityAddress,
+      communityName,
+      createdAt,
+      communityId,
+    } = getCommunityDto;
     const take = pageSize;
     const skip = (current - 1) * pageSize;
     const where = [];
@@ -22,6 +28,13 @@ export class CommunityService {
       where.push({
         communityName: {
           contains: communityName,
+        },
+      });
+    }
+    if (communityId) {
+      where.push({
+        communityId: {
+          equals: communityId,
         },
       });
     }
@@ -55,7 +68,7 @@ export class CommunityService {
       where: {
         AND: where,
       },
-      include: {
+      select: {
         area: {
           select: {
             id: true,
@@ -89,6 +102,23 @@ export class CommunityService {
       count,
       data: communities,
     };
+  }
+
+  /**
+   * 查询小区列表
+   * @param communityName
+   */
+  async getCommunityDictList(communityName?: string) {
+    return this.prismaService.community.findMany({
+      where: { communityName: { contains: communityName } },
+      select: {
+        id: true,
+        communityName: true,
+      },
+      orderBy: [{ createdAt: 'asc' }],
+      take: 10,
+      skip: 0,
+    });
   }
 
   async createCommunity(createCommunityDto: CreateCommunityDto) {

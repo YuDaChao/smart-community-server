@@ -10,12 +10,12 @@ import {
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
-import jwtConfig from '../config/jwt.config';
+import jwtConfig from '../commons/config/jwt.config';
 import { HashingService } from '../hashing/hashing.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SignInDto } from './dtos/signin.dto';
 import { SignupDto } from './dtos/signup.dto';
-import { RequestUser } from '../constant/jwt.constant';
+import { RequestUser } from '../commons/constant/jwt.constant';
 
 @Injectable()
 export class AuthService {

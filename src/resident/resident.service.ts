@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, VerifyStatus } from '@prisma/client';
+import {Prisma, ResidentType, VerifyStatus} from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { GetResidentDto } from './dtos/get-resident.dto';
@@ -10,7 +10,7 @@ export class ResidentService {
   constructor(private readonly prismaService: PrismaService) {}
 
   async createResident(createResidentDto: CreateResidentDto) {
-    return this.prismaService.resident.create({
+    return await this.prismaService.resident.create({
       data: {
         ...createResidentDto,
         createdAt: new Date(),
@@ -19,7 +19,7 @@ export class ResidentService {
   }
 
   async updateResident(id: number, updateResidentDto: UpdateResidentDto) {
-    return this.prismaService.resident.update({
+    return await this.prismaService.resident.update({
       where: { id },
       data: updateResidentDto,
     });
@@ -50,12 +50,21 @@ export class ResidentService {
         key === 'residentPhone' ||
         key === 'communityId' ||
         key === 'buildingId' ||
-        key === 'floorNo' ||
-        key === 'floorNumber'
+        key === 'houseId' ||
+        key === 'residentType'
       ) {
         andWhere.push({
           [key]: {
             equals: filters[key],
+          },
+        });
+      }
+      if (key === 'floorNo' || key === 'floorNumber') {
+        andWhere.push({
+          house: {
+            is: {
+              [key]: filters[key],
+            },
           },
         });
       }
@@ -89,6 +98,14 @@ export class ResidentService {
             buildingName: true,
           },
         },
+        house: {
+          select: {
+            id: true,
+            floorNo: true,
+            floorNumber: true,
+            houseStatus: true,
+          },
+        },
       },
       orderBy: [{ createdAt: 'desc' }],
       skip,
@@ -101,12 +118,12 @@ export class ResidentService {
   }
 
   /**
-   * 查询小区总人数 已认证的
+   * 查询小区入住人数 已认证的
    * @param communityId
    */
   async getResidentCountByCommunityId(communityId?: number) {
     const andWhere: Prisma.ResidentWhereInput[] = [
-      { certificationStatus: VerifyStatus.SUCCESS },
+      { verifyStatus: VerifyStatus.SUCCESS },
     ];
     // 超级管理员 查看所有小区数据
     if (communityId) {
@@ -116,7 +133,23 @@ export class ResidentService {
   }
 
   /**
-   * 统计小区住户房屋类型人数
+   * 查询小区租户人数 已认证的
+   * @param communityId
+   */
+  async getResidentTenantCountByCommunityId(communityId?: number) {
+    const andWhere: Prisma.ResidentWhereInput[] = [
+      { verifyStatus: VerifyStatus.SUCCESS },
+      { residentType: ResidentType.TENANT },
+    ];
+    // 超级管理员 查看所有小区数据
+    if (communityId) {
+      andWhere.push({ communityId });
+    }
+    return this.prismaService.resident.count({ where: { AND: andWhere } });
+  }
+
+  /**
+   * 统计小区住户房屋类型数
    * @param communityId
    */
   async getResidentHouseStatusCountByCommunityId(communityId?: number) {
@@ -125,7 +158,7 @@ export class ResidentService {
     if (communityId) {
       where.communityId = communityId;
     }
-    const result = await this.prismaService.resident.groupBy({
+    const result = await this.prismaService.house.groupBy({
       by: ['houseStatus'],
       _count: {
         _all: true,
@@ -148,13 +181,13 @@ export class ResidentService {
       where.communityId = communityId;
     }
     const result = await this.prismaService.resident.groupBy({
-      by: ['certificationStatus'],
+      by: ['verifyStatus'],
       _count: {
         _all: true,
       },
     });
     return result.map((item) => ({
-      certificationStatus: item.certificationStatus,
+      certificationStatus: item.verifyStatus,
       count: item._count._all,
     }));
   }

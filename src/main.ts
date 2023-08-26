@@ -3,10 +3,12 @@ import { NestFactory } from '@nestjs/core';
 import * as dotenv from 'dotenv';
 import { AppModule } from './app.module';
 import { utilities, WinstonModule } from 'nest-winston';
-import { createLogger } from 'winston';
 import * as winston from 'winston';
+import { createLogger } from 'winston';
 import * as process from 'process';
-import { ResponseInterceptor } from './interceptors/response.interceptor';
+import { ResponseInterceptor } from './commons/interceptors/response.interceptor';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { RMQ_QUEUE_NAME } from './commons/constant/rabbitmq.constant';
 
 dotenv.config();
 
@@ -34,6 +36,17 @@ async function bootstrap() {
   });
   // logger
   // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      // rabbitmq 地址
+      urls: ['amqp://localhost:5672'],
+      queue: RMQ_QUEUE_NAME,
+      queueOptions: {},
+    },
+  });
+
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
@@ -41,7 +54,8 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  await app.listen(3000);
+  await app.startAllMicroservices();
+  await app.listen(50000);
 }
 
 bootstrap();
