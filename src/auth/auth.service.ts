@@ -10,12 +10,14 @@ import {
 import { ConfigType } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
+import { randomUUID } from 'crypto';
 import jwtConfig from '../commons/config/jwt.config';
 import { HashingService } from '../hashing/hashing.service';
 import { PrismaService } from '../prisma/prisma.service';
 import { SignInDto } from './dtos/signin.dto';
 import { SignupDto } from './dtos/signup.dto';
 import { RequestUser } from '../commons/constant/jwt.constant';
+import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
 
 @Injectable()
 export class AuthService {
@@ -25,6 +27,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     @Inject(jwtConfig.KEY)
     private readonly jwtConf: ConfigType<typeof jwtConfig>,
+    private readonly refreshTokenIdsStorage: RefreshTokenIdsStorage,
   ) {}
 
   async signUp({ userName, password, avatar, communityId, roleId }: SignupDto) {
@@ -86,11 +89,22 @@ export class AuthService {
 
   async refreshToken(refreshToken: string) {
     try {
-      const requestUser = (await this.jwtService.verifyAsync(refreshToken, {
+      const { id, refreshTokenId } = await this.jwtService.verifyAsync<
+        Omit<RequestUser, 'communityId'> & { refreshTokenId: string }
+      >(refreshToken, {
         secret: this.jwtConf.secret,
-      })) as Omit<RequestUser, 'communityId'>;
+      });
+      const validate = await this.refreshTokenIdsStorage.validate(
+        id,
+        refreshTokenId,
+      );
+      if (validate) {
+        await this.refreshTokenIdsStorage.invalidate(id);
+      } else {
+        throw new Error('refreshToken invalid');
+      }
       const user = await this.prismaService.user.findUnique({
-        where: { id: requestUser.id },
+        where: { id },
       });
       return this.generateTokens(user);
     } catch (e) {
@@ -99,13 +113,17 @@ export class AuthService {
   }
 
   async generateTokens(user: User) {
+    const refreshTokenId = randomUUID();
     const [accessToken, refreshAccessToken] = await Promise.all([
       this.signToken(user.id, this.jwtConf.accessTokenExpiresIn, {
         name: user.userName,
         communityId: user.communityId,
       }),
-      this.signToken(user.id, this.jwtConf.refreshTokenExpiresIn),
+      this.signToken(user.id, this.jwtConf.refreshTokenExpiresIn, {
+        refreshTokenId,
+      }),
     ]);
+    await this.refreshTokenIdsStorage.insert(user.id, refreshTokenId);
     return { accessToken, refreshAccessToken };
   }
 
