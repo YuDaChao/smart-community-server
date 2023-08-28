@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { PageDto } from '../../commons/page.dto';
 import { UpdateResidentDto } from './update-resident.dto';
-import { ResidentType } from '@prisma/client';
+import { HouseStatus, ResidentType, VerifyStatus } from '@prisma/client';
 
 export class GetResidentDto extends IntersectionType(
   UpdateResidentDto,
@@ -31,4 +31,10 @@ export class GetResidentDto extends IntersectionType(
   @IsOptional()
   @IsEnum(ResidentType)
   residentType?: ResidentType;
+  @IsOptional()
+  @IsEnum(HouseStatus)
+  houseStatus: HouseStatus;
+  @IsOptional()
+  @IsEnum(VerifyStatus)
+  verifyStatus: VerifyStatus;
 }

@@ -29,8 +29,9 @@ export class AuthController {
     return this.authService.signIn(signInDto);
   }
 
-  @Get('refresh')
-  async refreshToken(@Query('refreshToken') refreshToken: string) {
+  @HttpCode(HttpStatus.OK)
+  @Post('refresh')
+  async refreshToken(@Body('refreshToken') refreshToken: string) {
     return this.authService.refreshToken(refreshToken);
   }
 }

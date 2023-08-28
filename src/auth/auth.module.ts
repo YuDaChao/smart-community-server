@@ -10,6 +10,7 @@ import { AccessTokenGuard } from './guards/access-token.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { PermissionGuard } from './guards/permission.guard';
 import { UserModule } from '../user/user.module';
+import { RefreshTokenIdsStorage } from './refresh-token-ids.storage';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { UserModule } from '../user/user.module';
       provide: APP_GUARD,
       useClass: PermissionGuard,
     },
+    RefreshTokenIdsStorage,
   ],
   controllers: [AuthController],
 })

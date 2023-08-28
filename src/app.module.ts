@@ -46,7 +46,6 @@ import { WorkflowModule } from './workflow/workflow.module';
     RoleModule,
     MenuModule,
     DashboardModule,
-    BullModule.forRoot({}),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [JwtConfig],
@@ -55,7 +54,10 @@ import { WorkflowModule } from './workflow/workflow.module';
       rootPath: path.join(process.cwd(), 'images'),
       serveRoot: '/static',
     }),
-    RedisModule,
+    RedisModule.forRoot({
+      host: 'localhost',
+      port: 6379,
+    }),
     LoggerModule,
     RepairModule,
     WorkflowModule,

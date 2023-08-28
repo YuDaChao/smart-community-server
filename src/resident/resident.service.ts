@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {Prisma, ResidentType, VerifyStatus} from '@prisma/client';
+import { Prisma, ResidentType, VerifyStatus } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { GetResidentDto } from './dtos/get-resident.dto';
@@ -29,50 +29,42 @@ export class ResidentService {
     const { pageSize, current, ...filters } = getResidentDto;
     const skip = (current - 1) * pageSize;
     const take = pageSize;
-    const andWhere: Prisma.ResidentWhereInput[] = [];
+    const where: Prisma.ResidentWhereInput = {};
     Object.keys(filters).forEach((key: keyof typeof filters) => {
       if (key === 'createAt') {
-        andWhere.push({
-          createdAt: {
-            gte: filters[key][0],
-            lte: filters[key][1],
-          },
-        });
+        where.createdAt = {
+          gte: filters[key][0],
+          lte: filters[key][1],
+        };
       }
       if (key === 'residentName') {
-        andWhere.push({
-          [key]: {
-            startsWith: filters[key],
-          },
-        });
+        where[key] = {
+          startsWith: filters[key],
+        };
+      }
+      if (key === 'communityId' || key === 'buildingId' || key === 'houseId') {
+        where[key] = {
+          equals: filters[key],
+        };
       }
       if (
         key === 'residentPhone' ||
-        key === 'communityId' ||
-        key === 'buildingId' ||
-        key === 'houseId' ||
-        key === 'residentType'
+        key === 'residentType' ||
+        key === 'verifyStatus'
       ) {
-        andWhere.push({
-          [key]: {
-            equals: filters[key],
-          },
-        });
+        where[key] = filters[key];
       }
-      if (key === 'floorNo' || key === 'floorNumber') {
-        andWhere.push({
-          house: {
-            is: {
-              [key]: filters[key],
-            },
+      if (key === 'floorNo' || key === 'floorNumber' || key === 'houseStatus') {
+        where.house = {
+          is: {
+            [key]: filters[key],
           },
-        });
+        };
       }
     });
+    console.log(where);
     const count = await this.prismaService.resident.count({
-      where: {
-        AND: andWhere,
-      },
+      where,
     });
     if (count === 0) {
       return {
@@ -81,9 +73,7 @@ export class ResidentService {
       };
     }
     const residentList = await this.prismaService.resident.findMany({
-      where: {
-        AND: andWhere,
-      },
+      where,
       include: {
         community: {
           select: {
