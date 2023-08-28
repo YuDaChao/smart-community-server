@@ -30,7 +30,6 @@ import * as process from 'process';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from './logger/logger.module';
-import { BullModule } from '@nestjs/bull';
 import { RepairModule } from './repair/repair.module';
 import { WorkflowModule } from './workflow/workflow.module';
 import { NoticeModule } from './notice/notice.module';
