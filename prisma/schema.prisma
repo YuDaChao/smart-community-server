@@ -36,6 +36,7 @@ model Community {
   buildings        Building[]
   users            User[]
   residents        Resident[]
+  notice           Notice[]
 
   @@index([areaId], map: "community_areaId_fkey")
   @@map("community")
@@ -217,6 +218,7 @@ model User {
   roleId      Int        @map("role_id")
   role        Role       @relation(fields: [roleId], references: [id])
   loggers     Logger[]
+  notices     Notice[]
 
   @@map("user")
 }
@@ -327,4 +329,26 @@ model WorkflowAction {
   updatedAt      DateTime  @updatedAt @map("updated_at")
 
   @@map("workflow_action")
+}
+
+/// 公告
+model Notice {
+  id            Int        @unique @default(autoincrement())
+  noticeTitle   String     @map("notice_title") @db.VarChar(100)
+  /// 公告类型 1: 通知  2：公告
+  noticeType    Int        @map("notice_type") @db.TinyInt
+  noticeContent String     @map("notice_content") @db.VarChar(2000)
+  /// 公告状态 0: 关闭 1：正常
+  noticeStatus  Int        @map("notice_status") @db.TinyInt
+  createdAt     DateTime   @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+  viewCount     Int        @map("view_count") @db.Int
+  /// 公告范围
+  communityId   Int?       @map("community_id")
+  community     Community? @relation(fields: [communityId], references: [id])
+  /// 创建者
+  userId        Int        @map("user_id")
+  user          User       @relation(fields: [userId], references: [id])
+
+  @@map("notice")
 }

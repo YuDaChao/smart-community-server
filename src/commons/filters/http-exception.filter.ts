@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
+import * as process from 'process';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -19,8 +20,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     res.status(status).json({
       code: status,
       data: null,
-      message: exception.message,
-      errorMsg: exception.response?.message,
+      message:
+        process.env.NODE_ENV === 'development' ? exception : exception.message,
     });
   }
 }

@@ -33,6 +33,7 @@ import { LoggerModule } from './logger/logger.module';
 import { BullModule } from '@nestjs/bull';
 import { RepairModule } from './repair/repair.module';
 import { WorkflowModule } from './workflow/workflow.module';
+import { NoticeModule } from './notice/notice.module';
 
 @Module({
   imports: [
@@ -61,6 +62,7 @@ import { WorkflowModule } from './workflow/workflow.module';
     LoggerModule,
     RepairModule,
     WorkflowModule,
+    NoticeModule,
   ],
   controllers: [AppController],
   providers: [
