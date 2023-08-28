@@ -47,6 +47,26 @@ export class NoticeService {
     return { count, data: notices };
   }
 
+  async getNoticeById(noticeId: number) {
+    return await this.prismaService.notice.findUnique({
+      where: { id: noticeId },
+      include: {
+        user: {
+          select: {
+            id: true,
+            userName: true,
+          },
+        },
+        community: {
+          select: {
+            id: true,
+            communityName: true,
+          },
+        },
+      },
+    });
+  }
+
   async createNotice(createNoticeDto: CreateNoticeDto, user: RequestUser) {
     const { communityId, ...rest } = createNoticeDto;
 

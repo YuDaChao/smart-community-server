@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { NoticeService } from './notice.service';
 import { CreateNoticeDto } from './dtos/create-notice.dto';
 import { User } from '../commons/decorators/user.decorator';
@@ -12,6 +20,11 @@ export class NoticeController {
   @Get()
   async getNoticeList(@Query() getNoticeDto: GetNoticeDto) {
     return this.noticeService.getNoticeListByPage(getNoticeDto);
+  }
+
+  @Get(':id')
+  async getNoticeInfo(@Param('id', new ParseIntPipe()) noticeId: number) {
+    return this.noticeService.getNoticeById(noticeId);
   }
 
   @Post()
