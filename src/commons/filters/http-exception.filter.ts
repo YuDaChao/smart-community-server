@@ -6,7 +6,6 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
-import * as process from 'process';
 import { REQUEST_USER_KEY } from '../constant/jwt.constant';
 
 @Catch()
