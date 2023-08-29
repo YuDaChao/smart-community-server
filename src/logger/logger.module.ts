@@ -14,7 +14,7 @@ import { LoggerController } from './logger.controller';
         name: RMQ_SERVER_NAME,
         transport: Transport.RMQ,
         options: {
-          urls: ['amqp://192.168.0.100:5672'],
+          urls: ['amqp://localhost:5672'],
           queue: RMQ_QUEUE_NAME,
         },
       },

@@ -342,7 +342,7 @@ model Notice {
   noticeStatus  Int        @map("notice_status") @db.TinyInt
   createdAt     DateTime   @map("created_at")
   updatedAt     DateTime   @updatedAt @map("updated_at")
-  viewCount     Int        @map("view_count") @db.Int
+  viewCount     Int        @default(0) @map("view_count") @db.Int
   /// 公告范围
   communityId   Int?       @map("community_id")
   community     Community? @relation(fields: [communityId], references: [id])

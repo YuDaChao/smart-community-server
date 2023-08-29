@@ -7,6 +7,11 @@ import {
   RMQ_LOGGER,
   RMQ_SERVER_NAME,
 } from '../commons/constant/rabbitmq.constant';
+import { Request } from 'express';
+import {
+  REQUEST_USER_KEY,
+  RequestUser,
+} from '../commons/constant/jwt.constant';
 
 @Injectable()
 export class LoggerService {
@@ -24,8 +29,17 @@ export class LoggerService {
     });
   }
 
-  async addLoggerToQueue(createLoggerDto: CreateLoggerDto) {
-    this.client.send(RMQ_LOGGER, createLoggerDto).subscribe();
+  async addLoggerToQueue(req: Request) {
+    const { method, url, query, body, baseUrl, params } = req;
+    const log = {
+      method,
+      url: `${baseUrl}${url}`,
+      query: JSON.stringify(query),
+      param: JSON.stringify(params),
+      body: body as object,
+      userId: (req[REQUEST_USER_KEY] as RequestUser).id ?? null,
+    };
+    this.client.send(RMQ_LOGGER, log).subscribe();
     return 'success';
   }
 }

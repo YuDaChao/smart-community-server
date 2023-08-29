@@ -5,8 +5,11 @@ import { AppModule } from './app.module';
 import { utilities, WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import { createLogger } from 'winston';
+import 'winston-daily-rotate-file';
 import * as process from 'process';
 import { ResponseInterceptor } from './commons/interceptors/response.interceptor';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { RMQ_QUEUE_NAME } from './commons/constant/rabbitmq.constant';
 // import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 // import { RMQ_QUEUE_NAME } from './commons/constant/rabbitmq.constant';
 
@@ -25,6 +28,15 @@ async function bootstrap() {
           }),
         ),
       }),
+      new winston.transports.DailyRotateFile({
+        filename: 'log/error-%DATE%.log',
+        datePattern: 'YYYY-MM-DD-HH',
+        zippedArchive: true,
+        maxSize: '20m',
+        maxFiles: '7d',
+        level: 'error',
+        format: winston.format.json(),
+      }),
     ],
   });
   const logger = WinstonModule.createLogger({
@@ -37,15 +49,15 @@ async function bootstrap() {
   // logger
   // app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
 
-  // app.connectMicroservice<MicroserviceOptions>({
-  //   transport: Transport.RMQ,
-  //   options: {
-  //     // rabbitmq 地址
-  //     urls: ['amqp://192.168.0.100:5672'],
-  //     queue: RMQ_QUEUE_NAME,
-  //     queueOptions: {},
-  //   },
-  // });
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      // rabbitmq 地址
+      urls: ['amqp://localhost:5672'],
+      queue: RMQ_QUEUE_NAME,
+      queueOptions: {},
+    },
+  });
 
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalPipes(

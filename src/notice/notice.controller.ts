@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Put,
   Query,
 } from '@nestjs/common';
 import { NoticeService } from './notice.service';
@@ -23,8 +24,18 @@ export class NoticeController {
   }
 
   @Get(':id')
-  async getNoticeInfo(@Param('id', new ParseIntPipe()) noticeId: number) {
-    return this.noticeService.getNoticeById(noticeId);
+  async getNoticeInfo(
+    @Param('id', new ParseIntPipe()) noticeId: number,
+    @User('id') userId: number,
+  ) {
+    return this.noticeService.getNoticeById(noticeId, userId);
+  }
+
+  @Put(':id/view')
+  async updateNoticeViewCount(
+    @Param('id', new ParseIntPipe()) noticeId: number,
+  ) {
+    return this.noticeService.updateNoticeViewCountById(noticeId);
   }
 
   @Post()

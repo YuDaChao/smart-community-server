@@ -2,6 +2,7 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { RedisOptions } from 'ioredis';
 import { REDIS_OPTIONS } from './redis.interface';
 import { createRedisProvider } from './redis.provider';
+import { RedisService } from './redis.service';
 
 @Module({})
 export class RedisModule {
@@ -16,8 +17,9 @@ export class RedisModule {
           useValue: options,
         },
         redisClientProvider,
+        RedisService,
       ],
-      exports: [redisClientProvider],
+      exports: [redisClientProvider, RedisService],
     };
   }
 }
