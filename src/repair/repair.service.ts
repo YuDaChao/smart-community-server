@@ -4,6 +4,7 @@ import { CreateRepairDto } from './dtos/create-repair.dto';
 import { UpdateRepairProcessDto } from './dtos/update-repair-process.dto';
 import { WorkflowService } from '../workflow/workflow.service';
 import { Prisma } from '@prisma/client';
+import { GetRepairDto } from './dtos/get-repair.dto';
 
 @Injectable()
 export class RepairService {
@@ -51,11 +52,25 @@ export class RepairService {
     });
   }
 
-  async getRepairList() {
+  async getRepairList(getRepairDto: GetRepairDto) {
+    const { pageSize, current, communityId } = getRepairDto;
     const where: Prisma.RepairWhereInput = {
       repairStatus: true,
     };
+    if (communityId) {
+      where.resident = {
+        communityId,
+      };
+    }
     const count = await this.prismaService.repair.count({ where });
+    if (count === 0) {
+      return {
+        count,
+        data: [],
+      };
+    }
+    const take = pageSize;
+    const skip = (current - 1) * pageSize;
     const list = await this.prismaService.repair.findMany({
       where,
       include: {
@@ -64,32 +79,34 @@ export class RepairService {
             id: true,
             residentName: true,
             residentType: true,
+            residentPhone: true,
+            communityId: true,
+            building: {
+              select: {
+                id: true,
+                buildingName: true,
+                parent: true,
+              },
+            },
+            house: {
+              select: {
+                id: true,
+                floorNumber: true,
+                floorNo: true,
+              },
+            },
           },
         },
-        repairFiles: {
+        repairType: {
           select: {
             id: true,
-            fileUrl: true,
-          },
-        },
-        repairProgress: {
-          include: {
-            workflow: {
-              select: {
-                id: true,
-                workflowName: true,
-              },
-            },
-            repairProgressFiles: {
-              select: {
-                id: true,
-                fileUrl: true,
-              },
-            },
+            repairTypeName: true,
           },
         },
       },
       orderBy: [{ createdAt: 'desc' }],
+      take,
+      skip,
     });
     return {
       count,
@@ -108,6 +125,7 @@ export class RepairService {
             residentType: true,
           },
         },
+        repairType: true,
         repairFiles: {
           select: {
             id: true,

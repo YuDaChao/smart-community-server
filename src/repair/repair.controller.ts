@@ -5,6 +5,7 @@ import {
   Param,
   ParseIntPipe,
   Post,
+  Query,
   UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
@@ -15,6 +16,8 @@ import * as multer from 'multer';
 import * as path from 'path';
 import * as process from 'process';
 import e, { Express } from 'express';
+import { GetRepairDto } from './dtos/get-repair.dto';
+import { User } from '../commons/decorators/user.decorator';
 
 @Controller('repair')
 export class RepairController {
@@ -46,8 +49,14 @@ export class RepairController {
   }
 
   @Get()
-  async getRepairList() {
-    return await this.repairService.getRepairList();
+  async getRepairList(
+    @Query() getRepairDto: GetRepairDto,
+    @User('communityId') communityId?: number,
+  ) {
+    if (communityId) {
+      getRepairDto.communityId = communityId;
+    }
+    return await this.repairService.getRepairList(getRepairDto);
   }
 
   @Get(':repairId')

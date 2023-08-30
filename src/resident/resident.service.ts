@@ -4,6 +4,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CreateResidentDto } from './dtos/create-resident.dto';
 import { GetResidentDto } from './dtos/get-resident.dto';
 import { UpdateResidentDto } from './dtos/update-resident.dto';
+import { ResidentCountInterface } from './interface/resident-count.interface';
 
 @Injectable()
 export class ResidentService {
@@ -109,15 +110,26 @@ export class ResidentService {
 
   /**
    * 查询小区入住人数 已认证的
-   * @param communityId
+   * @param params
    */
-  async getResidentCountByCommunityId(communityId?: number) {
+  async getResidentCountByCommunityId(params: ResidentCountInterface) {
+    const { communityId, createdAt } = params;
     const andWhere: Prisma.ResidentWhereInput[] = [
       { verifyStatus: VerifyStatus.SUCCESS },
     ];
     // 超级管理员 查看所有小区数据
     if (communityId) {
       andWhere.push({ communityId });
+    }
+    if (params.residentType) {
+      andWhere.push({ residentType: params.residentType });
+    }
+    if (createdAt) {
+      andWhere.push({
+        createdAt: {
+          lte: createdAt,
+        },
+      });
     }
     return this.prismaService.resident.count({ where: { AND: andWhere } });
   }

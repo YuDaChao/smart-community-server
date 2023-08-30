@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ResidentService } from '../resident/resident.service';
-import { HouseStatus } from '@prisma/client';
+import { HouseStatus, ResidentType } from '@prisma/client';
+import * as dayjs from 'dayjs';
 
 @Injectable()
 export class DashboardService {
@@ -16,17 +17,44 @@ export class DashboardService {
       this.residentService.getResidentHouseStatusCountByCommunityId(
         communityId,
       );
-    // 总住户数
-    const residentCount =
-      this.residentService.getResidentCountByCommunityId(communityId);
-    // 总租户数
+    // ------------------------------
+    // 小区入住人数
+    const residentCount = this.residentService.getResidentCountByCommunityId({
+      communityId,
+    });
+    // 上个月小区入住人数
+    const lastDate = dayjs()
+      .subtract(1, 'month')
+      .endOf('date')
+      .format('YYYY-MM-DD');
+    const createdAt = new Date(`${lastDate} 23:59:59`);
+    const lastResidentCount =
+      this.residentService.getResidentCountByCommunityId({
+        communityId,
+        createdAt,
+      });
+    // ------------------------------
+    // 小区租户人数
     const residentTenantCount =
-      this.residentService.getResidentTenantCountByCommunityId(communityId);
-    const [houseStatusCount, count, tenantCount] = await Promise.all([
-      residentHouseStatusCount,
-      residentCount,
-      residentTenantCount,
-    ]);
+      this.residentService.getResidentCountByCommunityId({
+        communityId,
+        residentType: ResidentType.TENANT,
+      });
+    // 上个月小区租户人数
+    const lastResidentTenantCount =
+      this.residentService.getResidentCountByCommunityId({
+        communityId,
+        residentType: ResidentType.TENANT,
+        createdAt,
+      });
+    const [houseStatusCount, count, tenantCount, lastCount, lastTenantCount] =
+      await Promise.all([
+        residentHouseStatusCount,
+        residentCount,
+        residentTenantCount,
+        lastResidentCount,
+        lastResidentTenantCount,
+      ]);
     const houseStatusCountMap: Partial<Record<HouseStatus, number>> =
       houseStatusCount.reduce(
         (prev, cur) => ({
@@ -50,9 +78,12 @@ export class DashboardService {
       hire: houseStatusCountMap.HIRE,
       // 空闲
       idle: houseStatusCountMap.IDLE,
+      // 入住率
       occupancyRate,
       residentCount: count,
       tenantCount,
+      lastResidentCount: lastCount,
+      lastTenantCount,
     };
   }
 }

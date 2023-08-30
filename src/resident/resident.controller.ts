@@ -69,7 +69,7 @@ export class ResidentController {
      */
     const userInfo = await this.userService.getUserRoleInfoById(user.id);
     const communityId = userInfo.communityId;
-    return this.residentService.getResidentCountByCommunityId(communityId);
+    return this.residentService.getResidentCountByCommunityId({ communityId });
   }
 
   @Get('/house-status/count')

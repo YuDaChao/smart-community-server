@@ -1,7 +1,6 @@
 import {
   IsNumber,
   Matches,
-  IsPositive,
   IsString,
   IsEnum,
 } from 'class-validator';
